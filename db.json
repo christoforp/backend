@@ -1,0 +1,38 @@
+{
+    "persons": [
+      {
+        "name": "Arto Hellas",
+        "number": "040-123456",
+  
+        "id": 1
+      },
+      
+      {
+        "name": "Ada Lovelace",
+  
+        "number": "39-44-5323523",
+        "id": 2
+      },
+      {
+        "name": "Christofor  Pavlidi",
+        "phonenumber": "",
+        "date": "2022-04-20T13:39:33.699Z",
+        "important": true,
+        "id": 7
+      },
+      {
+        "name": "Ela",
+        "phonenumber": "+1224423",
+        "date": "2022-04-23T11:59:29.791Z",
+        "important": true,
+        "id": 6
+      },
+      {
+        "name": "Chr2",
+        "phonenumber": "",
+        "date": "2022-04-25T11:10:38.856Z",
+        "important": true,
+        "id": 5
+      }
+    ]
+  }
