@@ -1,4 +1,6 @@
 const express = require("express") // We initialize variables "express", which have to use express library.
+const req = require("express/lib/request")
+const { get } = require("express/lib/response")
 
 
 const app  = express() // We initalize variables, which purpose is to create express application.
@@ -6,8 +8,8 @@ const app  = express() // We initalize variables, which purpose is to create exp
 // Creates an Express application. The express() function is top level function exported by express module. 
 
 
-
-
+app.use(express.json()) // We are using "app.use(express.json())", that we can get into data, which has been coming from request. If we don't use this, then  body value would be undeterminant and it would be seen error in (Postman and terminal), When user trying to add new values to "persons" table. ('./api/persons') 
+                        // "Json" parser purpose is to take request with data and change it to javascript olio and then it invest => request.body. 
 let persons = [ // We initalized variables to, where we adding 5 different values (array). There is a three different object all of that values
 
 {
@@ -37,9 +39,12 @@ let persons = [ // We initalized variables to, where we adding 5 different value
 ]
 
 
+
+
 app.get('/api/persons', (request, response) => { // We determine application (event handler), which purpose is to get application to => "/api/persons"
   response.json(persons) // We are answering to request  with response variables and express moves it automatically to json.mode
 })
+
 
 
 
@@ -47,8 +52,8 @@ app.get('/api/persons', (request, response) => { // We determine application (ev
 
  // We initalize variable "maxValue", which uses "Math.max" function, that can we use this we have to create copy of that table, then it can apply all values, where is "id" name object and then it return highest value "maxValue" to user.
 
-  const maxValue = Math.max(...persons.map(findId => findId.id))
-  const showValue = `<h1>There is total of ${maxValue} different persons inside info!</h1>` // We initalize variable "showValue", which is equal as that text. There is also "maxValue" inside that text.
+  const maxId= Math.max(...persons.map(findId => findId.id))
+  const showId = `<h1>There is total of ${maxId} different persons inside info!</h1>` // We initalize variable "showValue", which is equal as that text. There is also "maxValue" inside that text.
 
   
   var  today = new Date(); // We initalize variable "today", which is equal as new Date();,  
@@ -61,9 +66,9 @@ app.get('/api/persons', (request, response) => { // We determine application (ev
 
 
 app.get('/api/info', (request, response) => { // When user try to site "http:localhost:3000/api/info", then it always return it back to with answer to user with variables "response" 
-  response.send(`<h2>There is total  of ${maxValue} different persons in info! <br><br>${today}(Greenwich mean time)</h2>`) // we determine application (event handler), which purpose is to get application => "/api/info" becoming  "HTTP" request.   
-  console.log(maxValue) // This "console.log(maxValue)" prints that value "maxValue" to visible to the terminal. 
-  console.log(showValue)
+  response.send(`<h2>There is total  of ${maxId} different persons in info! <br><br>${today}(Greenwich mean time)</h2>`) // we determine application (event handler), which purpose is to get application => "/api/info" becoming  "HTTP" request.   
+  console.log(maxId) // This "console.log(maxValue)" prints that value "maxValue" to visible to the terminal. 
+  console.log(showId)
   console.log(today) // This "console.log(today)" prints that value "today" to visible to the  terminal.   
   response.json(persons)  // We are answering to "request" with response variables and express moves it automatically  to json.mode 
 })
@@ -81,14 +86,64 @@ app.get('/api/persons/:id', (request, response) => {
     response.status(404).end() // if  user try to go site => http//:localhost:3000/api/persons", which id value is not found and function is not going to happen, then it return request with "statuscode(404)
     console.log(person)  // We are using "console.log(person)", which print that value visible to the terminal 
   }
+})
+// We initalize and using "generateId" function, which are conduct (..) things inside that function, when use trying to add new values to  "persons" table. ('./api/persons') 
+const generateId= () => {  // id" values generatinglogic is determined to inside of "generateId()" function
+  const minId = persons.length +1  // We initalize variable "minId", which is equal as "persons.length +1", So First we calculate how many different values is found in that "persons" that table, then it add +1. 
+  console.log(`Minimum Id is now: ${minId}`) // "console.log()" print that text to terminal and at the same time it shows that "minId" current Id
+  const maxId = minId +1  // We initalize variable "maxId", which is equal as  "minId +1", so First we take that "minId" current id then it add +1   
+  console.log(`Maximum Id  is now:${maxId}`) // "console.log()" print that text to terminal and at the same time it shows that "maxId"   current Id 
+  const someId = Math.floor(Math.random()*(maxId- minId) + minId) // We initalize variable "someId", which calculate that function  => "Math.random()" and gives values X between [0,1] in desimal mode. function "Math.floor()" return highest number, which is smaller or bigger than given number.
+  console.log(`Some Id is ${someId}, which will be inserted into id object`)            // "console.log()" print that text to terminal and at the same time it shows that "someId" variables current value. 
+  return someId +1  // "return someId"  return that "randomValue" variables value => "newId"
+}
+
+
+// When user trying to go site "http://localhost:3000/api/persons", which purpose is to handle all HTTP POST request.
+  app.post('/api/persons', (request,response) => { // We determine (event handler), which purpose is to get application to mode ""./api/persons" becoming HTTP request.
+    // When are adding something in Postman, then we are choosing => body and we choose raw mode and we have to make sure it is in Json.mode
+    // This means that when values are adding to => POST "http://localhost:3000/api/persons", then variable request saves it data with (request.body) receives data and those current data will initalize back to  "getId" variable. 
+    const getId = request.body  // We initialize variable "getId", which is equal as request.body
+  
+    if(!getId.name || !getId.number || !getId.id) { // We are using "if()" function if "getId.name" or "getId.number" values is empty, so if there is missing something, When we trying to add a new values to table as result we are return things inside of {...}. 
+      console.log('No empty values. Please add either name or number and try again!:)') // "console.log()" Print that text to visible terminal.
+      // It print that value and shows Content-type in Postman or RestClient. This  also help to solve "Content-type header" problem, if it missing. 
+      console.log(request.headers)
+      response.status(204).json({ // We are using "response.status(204).json" to if there is any missing data, then we answer request with statuscode(400) bad request which also print that text to the terminal.
+        error: "Some content is missing" // Object name is "error", which include that text, this is seen with Postman .
+
+      })  
+
+    }
+
+
+  
+
+  
+      // We initalize variable "newId", where we adding three different object  => ["id","name","number"], which is seen "let persons"
+     const newId = {  // "id" values generetalogic is determined to inside of "generateId()" function 
+       id: generateId(), // We are creating "id" object, which include that "generateId()" function current value
+       name: getId.name, // We are creating "name" object, =>  which indluce that "getId.name" it same as => request.body.name
+       number: getId.number,// We are creating "number" object that get value =>  "getId.number" it is same as => request.body.number 
+       id: getId.id    
+      }
+
+
+     persons = persons.concat(newId) // We are creating a new table to  under "persons" variable with copying current value in "persons" and also adding "newId"  variables values to that table as well.
+     response.json(newId) // "response.json" purpose is to answer and return  that () value in json.mode.
+
+
+  })
+
+
     
-  })  // When user trying to go site "http:localhost:3000/api/persons/id:", which purpose is to handle  "HTTP delete request", which are mode "api/persons" > id[1,2,3,4,5], then it return answer back to user. 
+    // When user trying to go site "http:localhost/api/persons/id:", which purpose is to handle  "HTTP delete request", which are mode "api/persons" > id[1,2,3,4,5], then it return answer back to user. 
   app.delete('/api/persons/:id', (request, response) => {      // we determine application (event handler), which purpose is to get application => "/api/persons/:id" becoming  "HTTP" request.
     const ID = Number(request.params.id) // We initalize variable "ID", Which is also found in "app.get('/api/persons/:id") section. It is equal as "Number('') function. We are using "request.params.id", which purpose is to get into parameters id with "request.params.id", So when user trying to go site => "http://localhost:3000/api/persons/1"  it apply that id object value and return it in answer to under  "ID" variable.
-    console.log("Next it print persons variables values before deleting.") // It print that text visible to terminal.
+    console.log("N}ext it print persons variables values before deleting.") // It print that text visible to terminal.
     console.log(persons) // We are using "console.log(persons)", which print that value to visible to the terminal.
     persons = persons.filter(person => person.id !== ID) // We filtered that  table, which is inside of that "persons" variable that remains only those value, which are false with "ID"
-    console.log("Next it print person variables values after deleting to terminal.") // It print that text visible to terminal. 
+    console.log("text it print person variables values after deleting to terminal.") // It print that text visible to terminal. 
     console.log(persons) // We are using "console.log(persons)", which print that value to visible to terminal.
     
     if(persons) {  // We are using "if()" function to if "persons" request will work then => "http://localhost:3000/api/persons/2" it return "persons" variables values back to visible for user in json.mode 
@@ -108,8 +163,7 @@ app.get('/api/persons/:id', (request, response) => {
 
 
 
-    
-  
+
 
 
 
