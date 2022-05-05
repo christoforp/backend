@@ -1,6 +1,5 @@
 const express = require("express") // We initialize variables "express", which have to use express library.
-const req = require("express/lib/request")
-const { get } = require("express/lib/response")
+
 
 
 const app  = express() // We initalize variables, which purpose is to create express application.
@@ -95,7 +94,7 @@ const generateId= () => {  // id" values generatinglogic is determined to inside
   console.log(`Maximum Id  is now:${maxId}`) // "console.log()" print that text to terminal and at the same time it shows that "maxId"   current Id 
   const someId = Math.floor(Math.random()*(maxId- minId) + minId) // We initalize variable "someId", which calculate that function  => "Math.random()" and gives values X between [0,1] in desimal mode. function "Math.floor()" return highest number, which is smaller or bigger than given number.
   console.log(`Some Id is ${someId}, which will be inserted into id object`)            // "console.log()" print that text to terminal and at the same time it shows that "someId" variables current value. 
-  return someId +1  // "return someId"  return that "randomValue" variables value => "newId"
+  return someId+1  // "return someId"  return that "randomValue" variables value => "newId"
 }
 
 
@@ -103,18 +102,33 @@ const generateId= () => {  // id" values generatinglogic is determined to inside
   app.post('/api/persons', (request,response) => { // We determine (event handler), which purpose is to get application to mode ""./api/persons" becoming HTTP request.
     // When are adding something in Postman, then we are choosing => body and we choose raw mode and we have to make sure it is in Json.mode
     // This means that when values are adding to => POST "http://localhost:3000/api/persons", then variable request saves it data with (request.body) receives data and those current data will initalize back to  "getId" variable. 
-    const getId = request.body  // We initialize variable "getId", which is equal as request.body
+    const getId= request.body  // We initialize variable "getId", which is equal as request.body
   
-    if(!getId.name || !getId.number || !getId.id) { // We are using "if()" function if "getId.name" or "getId.number" values is empty, so if there is missing something, When we trying to add a new values to table as result we are return things inside of {...}. 
+    if(!getId.name || !getId.number) { // We are using "if()" function if "getId.name" or "getId.number" values is empty, so if there is missing something, When we trying to add a new values to table as result we are return things inside of {...}. 
       console.log('No empty values. Please add either name or number and try again!:)') // "console.log()" Print that text to visible terminal.
-      // It print that value and shows Content-type in Postman or RestClient. This  also help to solve "Content-type header" problem, if it missing. 
-      console.log(request.headers)
-      response.status(204).json({ // We are using "response.status(204).json" to if there is any missing data, then we answer request with statuscode(400) bad request which also print that text to the terminal.
-        error: "Some content is missing" // Object name is "error", which include that text, this is seen with Postman .
+                                                         // It print that value and shows Content-type in Postman or RestClient. This  also help to solve "Content-type header" problem, if it missing. 
+       return response.status(400).json({ // We are using "response.status(204).json" to if there is any missing data, then we answer request with statuscode(400) bad request which also print that text to the terminal.
+        errorMessage: "Some content is missing" // Object name is "error", which include that text, this is seen with Postman .
 
       })  
 
     }
+
+
+     // We initalize variable "lookpersons", which uses "persons.find()" function table", where it apply all "persons.name" values and  compare them if they will fit with  "get.Id.name" variables. 
+    const lookpersons = persons.some(findPerson => findPerson.name === getId.name) // Whereas  this will implement, so  it return it value "true", whereas it doesen't happen then it return value "false"
+   console.log(`Looking if persons find has currently exiting name, which you are trying to add. Result is => ${lookpersons}`) // "console.log()" print that text to terminal and at the same time it shows "lookpersons" current values , which can be also  (true or false)
+
+  if(lookpersons === true) { // We are using "if()" function if "lookpersons" is get value true so => if( "lookpersons" === true), then it return things inside of {...}
+    console.log('You tried add persons, which is already exist in the phonebook!. Please try again:)') // "console.log()" print that text to terminal
+  
+    return response.status(400).json({ // We are using return "response.status()", which return an error with statuscode(400) "bad request",   if there is any missing content 
+    errorMessage: "Name must be unique, Please try again!:)"  // it also print that text to the terminal. 
+  
+  
+  
+  })
+}
 
 
   
@@ -125,7 +139,7 @@ const generateId= () => {  // id" values generatinglogic is determined to inside
        id: generateId(), // We are creating "id" object, which include that "generateId()" function current value
        name: getId.name, // We are creating "name" object, =>  which indluce that "getId.name" it same as => request.body.name
        number: getId.number,// We are creating "number" object that get value =>  "getId.number" it is same as => request.body.number 
-       id: getId.id    
+       
       }
 
 
@@ -134,6 +148,9 @@ const generateId= () => {  // id" values generatinglogic is determined to inside
 
 
   })
+
+  
+
 
 
     
