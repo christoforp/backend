@@ -1,5 +1,6 @@
-const express = require("express") // We initialize variables "express", which have to use express library.
 
+const express = require("express") // We initialize variables "express", which have to use express library.
+const morgan = require('morgan') // We initalize variable "morgan", which have to use "morgan" "middleware" library. 
 
 
 const app  = express() // We initalize variables, which purpose is to create express application.
@@ -7,7 +8,17 @@ const app  = express() // We initalize variables, which purpose is to create exp
 // Creates an Express application. The express() function is top level function exported by express module. 
 
 
-app.use(express.json()) // We are using "app.use(express.json())", that we can get into data, which has been coming from request. If we don't use this, then  body value would be undeterminant and it would be seen error in (Postman and terminal), When user trying to add new values to "persons" table. ('./api/persons') 
+
+
+
+
+
+ // We initalize variables, which purpose is to create express application.
+
+// Creates an Express application. The express() function is top level function exported by express module. 
+
+
+ // We are using "app.use(express.json())", that we can get into data, which has been coming from request. If we don't use this, then  body value would be undeterminant and it would be seen error in (Postman and terminal), When user trying to add new values to "persons" table. ('./api/persons') 
                         // "Json" parser purpose is to take request with data and change it to javascript olio and then it invest => request.body. 
 let persons = [ // We initalized variables to, where we adding 5 different values (array). There is a three different object all of that values
 
@@ -40,9 +51,37 @@ let persons = [ // We initalized variables to, where we adding 5 different value
 
 
 
+
+
+
+
+
+
+
+
+
+
+app.use(express.json()) // We are using "app.use(express.json())", that we can get into data, which has been coming from request. If we don't use this, then  body value would be undeterminant and it would be seen error in (Postman and terminal), When user trying to add new values to "persons" table. ('./api/persons') 
+     // "Json" parser purpose is to take request with  "raw" data and change it to javascript creature  and then it invest it  => request.body. 
+
+     // Note that "app.use().json parser" should have been determined before to use "app.use(morgan("tiny"), because  then "request.body" has not yet been initialized. 
+                          
+             // We are using "app.use(morgan(tiny)", which logger console  in accordance with  "tiny confirugration" 
+             // in practically this means that, always when application  conduct  a new HTTP request, for example (adding a new persons  value to a table)
+             // "middleware" morgan can have acces to HTTP request and erros, Therefore, when application conduct a new HTTP request  terminal prints => POST, /api/persons 12.771 ms, POST /api/persons 200 58 -12.771 ms so method => (':method :url: status: res[content.lenght] -response-time ms) 
+             app.use(morgan("tiny"))  // We are using "app.use(morgan(tiny))", where are taking "morgan" middleware into account with "use" method and  we are  also creating a new logger with build format ("tiny"), which provide minimal output,  when logging in HTTP request. This will use its build "method", "Url", "identify" "status" and "response time in ms". 
+
+
 app.get('/api/persons', (request, response) => { // We determine application (event handler), which purpose is to get application to => "/api/persons"
   response.json(persons) // We are answering to request  with response variables and express moves it automatically to json.mode
 })
+
+
+
+
+
+
+
 
 
 
