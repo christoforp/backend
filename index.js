@@ -61,6 +61,7 @@ let persons = [ // We initalized variables to, where we adding 5 different value
 
 
 
+
 app.use(express.json()) // We are using "app.use(express.json())", that we can get into data, which has been coming from request. If we don't use this, then  body value would be undeterminant and it would be seen error in (Postman and terminal), When user trying to add new values to "persons" table. ('./api/persons') 
      // "Json" parser purpose is to take request with  "raw" data and change it to javascript creature  and then it invest it  => request.body. 
 
