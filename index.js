@@ -9,6 +9,25 @@ const app  = express() // We initalize variables, which purpose is to create exp
 
 
 
+ // We are using "app.use(morgan()", which logger console  in accordance with  "tiny confirugration" 
+             // in practically this means that, always when application  conduct  a new HTTP request, for example (adding a new persons  value to a table)
+             // "middleware" morgan can have acces to HTTP request and erros, Therefore, when application conduct a new HTTP request  terminal prints => POST, /api/persons 12.771 ms, POST /api/persons 200 58 -12.771 ms so method => (':method :url: status: res[content.lenght] -response-time ms) 
+            // We are using "app.use(morgan())", where are taking "morgan" middleware into account with "use" method and  we are  also creating a new logger with  format string of predefined token. This will use its build "method",  identify "url" "status" res:[content-length] "response time in ms". 
+             
+            app.use(morgan(":method :url : status: res[content-length]- :response-time ms: Post"))
+              
+            // We initalize "morgan.token()" and define with that method with name and callback function. This callback function is expected to return string value. 
+            // morgan will run "callback" function as each  times, when console occurs using the token.
+            // In this case token get value => "Post", (So user can use whatever wants to)
+            // That variable value "Post " is r eplaced to end   inside of  => "app.use(morgan)())"  function.
+            // Always application conduct "Http" request x, then it print also this  data inside of "request.body" to the terminal with "JSON.mode" 
+            // If this "request.body" is empty, then it only print {""} string to terminal.
+            // tokens in morgan is identified ":" symbol. "morgan" allows you create your own token with "morgan.token()" method.
+             morgan.token("Post", function (request, response){
+              return JSON.stringify(request.body)   // We are using return "JSON.stringify()" method, which purpose is to convert javascript value to JSON Mode.
+              //If value have JSON method, then it is responsible to define what data has been searilized.
+            
+             })
 
 
 
@@ -61,16 +80,6 @@ let persons = [ // We initalized variables to, where we adding 5 different value
 
 
 
-
-app.use(express.json()) // We are using "app.use(express.json())", that we can get into data, which has been coming from request. If we don't use this, then  body value would be undeterminant and it would be seen error in (Postman and terminal), When user trying to add new values to "persons" table. ('./api/persons') 
-     // "Json" parser purpose is to take request with  "raw" data and change it to javascript creature  and then it invest it  => request.body. 
-
-     // Note that "app.use().json parser" should have been determined before to use "app.use(morgan("tiny"), because  then "request.body" has not yet been initialized. 
-                          
-             // We are using "app.use(morgan(tiny)", which logger console  in accordance with  "tiny confirugration" 
-             // in practically this means that, always when application  conduct  a new HTTP request, for example (adding a new persons  value to a table)
-             // "middleware" morgan can have acces to HTTP request and erros, Therefore, when application conduct a new HTTP request  terminal prints => POST, /api/persons 12.771 ms, POST /api/persons 200 58 -12.771 ms so method => (':method :url: status: res[content.lenght] -response-time ms) 
-             app.use(morgan("tiny"))  // We are using "app.use(morgan(tiny))", where are taking "morgan" middleware into account with "use" method and  we are  also creating a new logger with build format ("tiny"), which provide minimal output,  when logging in HTTP request. This will use its build "method", "Url", "identify" "status" and "response time in ms". 
 
 
 app.get('/api/persons', (request, response) => { // We determine application (event handler), which purpose is to get application to => "/api/persons"
@@ -136,6 +145,10 @@ const generateId= () => {  // id" values generatinglogic is determined to inside
   console.log(`Some Id is ${someId}, which will be inserted into id object`)            // "console.log()" print that text to terminal and at the same time it shows that "someId" variables current value. 
   return someId+1  // "return someId"  return that "randomValue" variables value => "newId"
 }
+
+
+app.use(express.json()) // We are using "app.use(express.json())", that we can get into data, which has been coming from request. If we don't use this, then  body value would be undeterminant and it would be seen error in (Postman and terminal), When user trying to add new values to "persons" table. ('./api/persons') 
+     // "Json" parser purpose is to take request with  "raw" data and change it to javascript creature  and then it invest it  => request.body. 
 
 
 // When user trying to go site "http://localhost:3000/api/persons", which purpose is to handle all HTTP POST request.
