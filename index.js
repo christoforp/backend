@@ -1,11 +1,14 @@
 
 const express = require("express") // We initialize variables "express", which have to use express library.
 const morgan = require('morgan') // We initalize variable "morgan", which have to use "morgan" "middleware" library. 
-
+const cors = require("cors") // We initalize variable "cors", which have to use "cors" middlware library 
 
 const app  = express() // We initalize variables, which purpose is to create express application.
 
+
+
 // Creates an Express application. The express() function is top level function exported by express module. 
+
 
 
 
@@ -14,7 +17,7 @@ const app  = express() // We initalize variables, which purpose is to create exp
              // "middleware" morgan can have acces to HTTP request and erros, Therefore, when application conduct a new HTTP request  terminal prints => POST, /api/persons 12.771 ms, POST /api/persons 200 58 -12.771 ms so method => (':method :url: status: res[content.lenght] -response-time ms) 
             // We are using "app.use(morgan())", where are taking "morgan" middleware into account with "use" method and  we are  also creating a new logger with  format string of predefined token. This will use its build "method",  identify "url" "status" res:[content-length] "response time in ms". 
              
-            app.use(morgan(":method :url : status: res[content-length]- :response-time ms: Post"))
+            app.use(morgan(":method : url :status :res[content-length]- :response-time ms :Post"))
               
             // We initalize "morgan.token()" and define with that method with name and callback function. This callback function is expected to return string value. 
             // morgan will run "callback" function as each  times, when console occurs using the token.
@@ -37,8 +40,9 @@ const app  = express() // We initalize variables, which purpose is to create exp
 // Creates an Express application. The express() function is top level function exported by express module. 
 
 
- // We are using "app.use(express.json())", that we can get into data, which has been coming from request. If we don't use this, then  body value would be undeterminant and it would be seen error in (Postman and terminal), When user trying to add new values to "persons" table. ('./api/persons') 
-                        // "Json" parser purpose is to take request with data and change it to javascript olio and then it invest => request.body. 
+app.use(cors())
+                        
+    
 let persons = [ // We initalized variables to, where we adding 5 different values (array). There is a three different object all of that values
 
 {
@@ -237,7 +241,9 @@ app.use(express.json()) // We are using "app.use(express.json())", that we can g
 
 
 
-const PORT = 3000   // We initalize variable "Port", which is same as port number "3000"
+const PORT =  process.env.PORT || 3001   // We initalize variable "Port", which is same as port number "3000"
+                                         // "process.env.PORT" now we have been determinant PORT OF inside environment variable, whereas environment variable PORT Is not defined. "Heroku" configure application port with environment variable.
+                                
 app.listen(PORT, () => { // If we Would not be used this, then it there is nothing visible in terminal. 
     console.log(`server running on port${PORT}`) // It print that text to terminal, When we run program. 
 }) 
