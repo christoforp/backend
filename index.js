@@ -41,6 +41,13 @@ const app  = express() // We initalize variables, which purpose is to create exp
 
 
 app.use(cors())
+
+// We initialize "middleware express static" using "app.use())", where we creating "static" which is build in inside of express. 
+//Its purpose is to first find if  "request path " have  any similar file inside of that build folder at same time while it doing HTTP "request". If there is any similar data, then it return that "express" file. 
+app.use(express.static('build')) // Now HTTP request goes to address => "www../index.html.com" or "www.site.com", which shows "Frond end" done by React.  
+                                 // Get reqeust to address => "www.site/api/persons.com", which handle backend code. 
+
+
                         
     
 let persons = [ // We initalized variables to, where we adding 5 different values (array). There is a three different object all of that values
@@ -241,7 +248,7 @@ app.use(express.json()) // We are using "app.use(express.json())", that we can g
 
 
 
-const PORT =  process.env.PORT || 3001   // We initalize variable "Port", which is same as port number "3000"
+const PORT =  process.env.PORT || 3000   // We initalize variable "Port", which is same as port number "3000"
                                          // "process.env.PORT" now we have been determinant PORT OF inside environment variable, whereas environment variable PORT Is not defined. "Heroku" configure application port with environment variable.
                                 
 app.listen(PORT, () => { // If we Would not be used this, then it there is nothing visible in terminal. 
