@@ -1,6 +1,8 @@
 POST  https://calm-dusk-98996.herokuapp.com/api/persons
 
 {
+    "name": "Chr2",
+    "number": "040-465988842"
 
-    "Id": "Error"
+
 }

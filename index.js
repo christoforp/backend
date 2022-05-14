@@ -50,6 +50,7 @@ app.use(express.static('build')) // Now HTTP request goes to address => "www../i
                                  // Get reqeust to address => "www.site/api/persons.com", which handle backend code. 
 
 
+                                 
                         
     
 let persons = [ // We initalized variables to, where we adding 5 different values (array). There is a three different object all of that values
