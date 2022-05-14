@@ -2,7 +2,6 @@
 const express = require("express") // We initialize variables "express", which have to use express library.
 const morgan = require('morgan') // We initalize variable "morgan", which have to use "morgan" "middleware" library. 
 const cors = require("cors") // We initalize variable "cors", which have to use "cors" middlware library 
-
 const app  = express() // We initalize variables, which purpose is to create express application.
 
 
@@ -40,7 +39,10 @@ const app  = express() // We initalize variables, which purpose is to create exp
 // Creates an Express application. The express() function is top level function exported by express module. 
 
 
-app.use(cors())
+app.use(cors()) // We initalize "middleware" cors, which purpose is to allow request from all origin to express route
+// We are using this because in javascript, because our server source is in http://localhost:3001/api/persons and frontend is in "http://localhost:3000" , so its origin is not same.
+// in our situation javascript code can communicate only with same origin server.
+// "app.use()" cors purpose is allow request from another origins.
 
 // We initialize "middleware express static" using "app.use())", where we creating "static" which is build in inside of express. 
 //Its purpose is to first find if  "request path " have  any similar file inside of that build folder at same time while it doing HTTP "request". If there is any similar data, then it return that "express" file. 
@@ -221,10 +223,10 @@ app.use(express.json()) // We are using "app.use(express.json())", that we can g
     // When user trying to go site "http:localhost/api/persons/id:", which purpose is to handle  "HTTP delete request", which are mode "api/persons" > id[1,2,3,4,5], then it return answer back to user. 
   app.delete('/api/persons/:id', (request, response) => {      // we determine application (event handler), which purpose is to get application => "/api/persons/:id" becoming  "HTTP" request.
     const ID = Number(request.params.id) // We initalize variable "ID", Which is also found in "app.get('/api/persons/:id") section. It is equal as "Number('') function. We are using "request.params.id", which purpose is to get into parameters id with "request.params.id", So when user trying to go site => "http://localhost:3000/api/persons/1"  it apply that id object value and return it in answer to under  "ID" variable.
-    console.log("N}ext it print persons variables values before deleting.") // It print that text visible to terminal.
+    console.log("Next it print persons variables values before deleting.") // It print that text visible to terminal.
     console.log(persons) // We are using "console.log(persons)", which print that value to visible to the terminal.
     persons = persons.filter(person => person.id !== ID) // We filtered that  table, which is inside of that "persons" variable that remains only those value, which are false with "ID"
-    console.log("text it print person variables values after deleting to terminal.") // It print that text visible to terminal. 
+    console.log("Next it print person variables values after deleting to terminal.") // It print that text visible to terminal. 
     console.log(persons) // We are using "console.log(persons)", which print that value to visible to terminal.
     
     if(persons) {  // We are using "if()" function to if "persons" request will work then => "http://localhost:3000/api/persons/2" it return "persons" variables values back to visible for user in json.mode 
@@ -248,7 +250,7 @@ app.use(express.json()) // We are using "app.use(express.json())", that we can g
 
 
 
-const PORT =  process.env.PORT || 3000   // We initalize variable "Port", which is same as port number "3000"
+const PORT =  process.env.PORT || 3001   // We initalize variable "Port", which is same as port number "3000"
                                          // "process.env.PORT" now we have been determinant PORT OF inside environment variable, whereas environment variable PORT Is not defined. "Heroku" configure application port with environment variable.
                                 
 app.listen(PORT, () => { // If we Would not be used this, then it there is nothing visible in terminal. 
