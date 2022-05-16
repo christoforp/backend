@@ -46,11 +46,11 @@ app.use(cors()) // We initalize "middleware" cors, which purpose is to allow req
 
 // We initialize "middleware express static" using "app.use())", where we creating "static" which is build in inside of express. 
 //Its purpose is to first find if  "request path " have  any similar file inside of that build folder at same time while it doing HTTP "request". If there is any similar data, then it return that "express" file. 
-app.use(express.static('build')) // Now HTTP request goes to address => "www../index.html.com" or "www.site.com", which shows "Frond end" done by React.  
-                                 // Get reqeust to address => "www.site/api/persons.com", which handle backend code. 
+app.use(express.static('build')) // Now HTTP request goes to address => GET request  "https://calm-dusk-98996.herokuapp.com/api/persons" of backend  or  "https://calm-dusk-98996.herokuapp.com"", which shows "Frond end" done by React.  
+                                 // Get reqeust to address => "https://calm-dusk-98996.herokuapp.com/api/persons", which handle backend code. 
 
 
-                                 
+
                         
     
 let persons = [ // We initalized variables to, where we adding 5 different values (array). There is a three different object all of that values
