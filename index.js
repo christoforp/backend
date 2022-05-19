@@ -6,6 +6,7 @@ const app  = express() // We initalize variables, which purpose is to create exp
 
 
 
+
 // Creates an Express application. The express() function is top level function exported by express module. 
 
 
