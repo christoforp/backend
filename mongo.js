@@ -16,7 +16,7 @@ const password = process.argv[2] // We initalize function "password", which purp
  // We initialize data base, where we get connection to data base. We are using url from MongoDB Library
 
 
- const url =  `mongodb+srv://christoforp:christoforp@cluster0.osmk6.mongodb.net/myPhonebook?retryWrites=true&w=majority `
+ const url =  `mongodb+srv://christoforp:@cluster0.osmk6.mongodb.net/myPhonebook?retryWrites=true&w=majority `
 
 
  // "mongoose.connect(url)" purpose is to connect mongooseDB Database 
