@@ -1,14 +1,18 @@
+require('dotenv').config()  // We are taking  environment variables of 'dotenv' file into account  with  command "require('dotenv).config()and define same way as we using another environment variables => process.env.MONGODB_URI. 
+// It is also important that we take "dotenv" into account before  import model "Person", because then we make sure that initialized environment variables in file is initalized when we import modules code.
+
 
 const express = require("express") // We initialize variables "express", which have to use express library.
 const morgan = require('morgan') // We initalize variable "morgan", which have to use "morgan" "middleware" library. 
 const cors = require("cors") // We initalize variable "cors", which have to use "cors" middlware library 
 const app  = express() // We initalize variables, which purpose is to create express application.
+const Person =  require('./models/person') // We initalize variable "Person" and taking its model into account with "require('./models/persons.js)"
 
 
 
 
-// Creates an Express application. The express() function is top level function exported by express module. 
-
+// Thus that "Person" variable get same value as  what module define. 
+ 
 
 
 
@@ -98,8 +102,14 @@ let persons = [ // We initalized variables to, where we adding 5 different value
 
 
 app.get('/api/persons', (request, response) => { // We determine application (event handler), which purpose is to get application to => "/api/persons"
+  Person.find({}).then(persons =>{ // It apply all values from database and return it back to user. 
   response.json(persons) // We are answering to request  with response variables and express moves it automatically to json.mode
+    // Then we are answering "HTTP" request with list object with JSON method As result there is now found variables "persons"  returned object of MongoDB in table because We are answering request with JSON method.
+
+
 })
+})
+
 
 
 
@@ -129,16 +139,28 @@ app.get('/api/persons', (request, response) => { // We determine application (ev
 
 
 app.get('/api/info', (request, response) => { // When user try to site "http:localhost:3000/api/info", then it always return it back to with answer to user with variables "response" 
+  Person.find({}).then(persons => { // It apply all values from database and return it back to user
   response.send(`<h2>There is total  of ${maxId} different persons in info! <br><br>${today}(Greenwich mean time)</h2>`) // we determine application (event handler), which purpose is to get application => "/api/info" becoming  "HTTP" request.   
   console.log(maxId) // This "console.log(maxValue)" prints that value "maxValue" to visible to the terminal. 
   console.log(showId)
   console.log(today) // This "console.log(today)" prints that value "today" to visible to the  terminal.   
   response.json(persons)  // We are answering to "request" with response variables and express moves it automatically  to json.mode 
+  // Then we are answering "HTTP" request with list object with JSON method As result there is now found variables "persons"  returned object of MongoDB in table because We are answering request with JSON method.
+
+})
+
 })
 
 
+
 // When user try to site "http:localhost:3000/api/persons/id:", which purpose is to handle all "HTTP get request, which are mode "api/persons" > id[1,2,3,4,5], then it return answer back to user. 
-app.get('/api/persons/:id', (request, response) => { 
+app.get('/api/persons/:id', (request, response) => { // When user trying to go site "http://localhost:3001/api/2", then "params.id" variable is equal as 2
+  Person.findById(request.params.id).then(person=> { // We changes independent persons review  to mode => "Person.findById().then({})"
+  
+
+    response.json(person)
+  })
+
   const ID =  Number(request.params.id) // We initalize variable "ID", which is equal as "Number('')" function. We are using "request.params.id") that we can get into parameters id with "request.params.id", So When user trying to go site => "http://localhost:3000/api/persons/2" it apply that id object value and return it in answer to under "ID"
   const person = persons.find(person => person.id=== ID)  // We initalize variable "person", which apply "persons" value and its "id" object is equal as "ID"  
 
@@ -150,6 +172,7 @@ app.get('/api/persons/:id', (request, response) => {
     console.log(person)  // We are using "console.log(person)", which print that value visible to the terminal 
   }
 })
+
 // We initalize and using "generateId" function, which are conduct (..) things inside that function, when use trying to add new values to  "persons" table. ('./api/persons') 
 const generateId= () => {  // id" values generatinglogic is determined to inside of "generateId()" function
   const minId = persons.length +1  // We initalize variable "minId", which is equal as "persons.length +1", So First we calculate how many different values is found in that "persons" that table, then it add +1. 
@@ -172,7 +195,7 @@ app.use(express.json()) // We are using "app.use(express.json())", that we can g
     // This means that when values are adding to => POST "http://localhost:3000/api/persons", then variable request saves it data with (request.body) receives data and those current data will initalize back to  "getId" variable. 
     const getId= request.body  // We initialize variable "getId", which is equal as request.body
   
-    if(!getId.name || !getId.number) { // We are using "if()" function if "getId.name" or "getId.number" values is empty, so if there is missing something, When we trying to add a new values to table as result we are return things inside of {...}. 
+    if(!getId.name || !getId.number === undefined) { // We are using "if()" function if "getId.name" or "getId.number" values is empty, so if there is missing something, When we trying to add a new values to table as result we are return things inside of {...}. 
       console.log('No empty values. Please add either name or number and try again!:)') // "console.log()" Print that text to visible terminal.
                                                          // It print that value and shows Content-type in Postman or RestClient. This  also help to solve "Content-type header" problem, if it missing. 
        return response.status(400).json({ // We are using "response.status(204).json" to if there is any missing data, then we answer request with statuscode(400) bad request which also print that text to the terminal.
@@ -203,17 +226,24 @@ app.use(express.json()) // We are using "app.use(express.json())", that we can g
 
   
       // We initalize variable "newId", where we adding three different object  => ["id","name","number"], which is seen "let persons"
-     const newId = {  // "id" values generetalogic is determined to inside of "generateId()" function 
+     const createdata = Person({  // "id" values generetalogic is determined to inside of "generateId()" function 
        id: generateId(), // We are creating "id" object, which include that "generateId()" function current value
        name: getId.name, // We are creating "name" object, =>  which indluce that "getId.name" it same as => request.body.name
        number: getId.number,// We are creating "number" object that get value =>  "getId.number" it is same as => request.body.number 
        
-      }
+      })
 
 
-     persons = persons.concat(newId) // We are creating a new table to  under "persons" variable with copying current value in "persons" and also adding "newId"  variables values to that table as well.
-     response.json(newId) // "response.json" purpose is to answer and return  that () value in json.mode.
 
+      // We creating persons object with Person construction function 
+      // We answering  request  with save operation  inside  of callback function, For this we make sure that only if operation will success.
+      createdata.save().then(savedPerson=> {  //  callback functions parameter "savedperson", which is saved persons  
+        response.json(savedPerson) // "response.json" purpose is to answer and return that () in json.mode 
+        // Even Though we answering Http request with "Json"formed mode 
+
+      })
+
+     
 
   })
 
@@ -252,7 +282,7 @@ app.use(express.json()) // We are using "app.use(express.json())", that we can g
 
 
 
-const PORT =  process.env.PORT || 3001   // We initalize variable "Port", which is same as port number "3000"
+const PORT =  process.env.PORT     // We initalize variable "Port", which is same as port number "3000"
                                          // "process.env.PORT" now we have been determinant PORT OF inside environment variable, whereas environment variable PORT Is not defined. "Heroku" configure application port with environment variable.
                                 
 app.listen(PORT, () => { // If we Would not be used this, then it there is nothing visible in terminal. 
