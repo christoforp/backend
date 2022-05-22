@@ -14,7 +14,7 @@ const password = process.argv[2] // We initalize function "password", which purp
 // When we run application with command mongo.js, then password add mongoose.database a new documents.
 
  // We initialize data base, where we get connection to data base. We are using url from MongoDB Library
- const url = `mongodb+srv://christoforp:christoforp@cluster0.osmk6.mongodb.net/?retryWrites=true&w=majority`
+ const url = `mongodb+srv://christoforp:<password>@cluster0.osmk6.mongodb.net/?retryWrites=true&w=majority`
  
 
 
