@@ -101,6 +101,8 @@ let persons = [ // We initalized variables to, where we adding 5 different value
 
 
 
+
+
 app.get('/api/persons', (request, response) => { // We determine application (event handler), which purpose is to get application to => "/api/persons"
   Person.find({}).then(persons =>{ // It apply all values from database and return it back to user. 
   response.json(persons) // We are answering to request  with response variables and express moves it automatically to json.mode

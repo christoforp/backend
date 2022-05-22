@@ -24,6 +24,8 @@ mongoose.connect(url)
 
 
 
+
+
 // We initalize variable "personSchema", which purpose is to determine, which mode we save those object into database. 
 // So practically this means that, which mode they will be saved on the database.
 const PersonSchema = new mongoose.Schema({

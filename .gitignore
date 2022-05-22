@@ -1,6 +1,7 @@
 node_modules
 .env
 
+
 // We are creating gitgnore of .env because we don't want it to internet.
 
 
