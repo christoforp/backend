@@ -2,7 +2,7 @@ require('dotenv').config()  // We are taking  environment variables of 'dotenv' 
 // It is also important that we take "dotenv" into account before  import model "Person", because then we make sure that initialized environment variables in file is initalized when we import modules code.
 
 
-const express = require("express") // We initialize variables "express", which have to use express library.
+const  express = require("express") // We initialize variables "express", which have to use express library.
 const morgan = require('morgan') // We initalize variable "morgan", which have to use "morgan" "middleware" library. 
 const cors = require("cors") // We initalize variable "cors", which have to use "cors" middlware library 
 const app  = express() // We initalize variables, which purpose is to create express application.
@@ -226,21 +226,23 @@ app.use(express.json()) // We are using "app.use(express.json())", that we can g
 
   
 
-  
-      // We initalize variable "newId", where we adding three different object  => ["id","name","number"], which is seen "let persons"
-     const createdata = Person({  // "id" values generetalogic is determined to inside of "generateId()" function 
+      // We initalize variable "person",which utilize Person{...} function, So it means that that we have been created separated module for "Person"
+      // We initalize variable "person ", where we adding three different object  => ["id","name","number"], which is seen "let persons"
+     const person = Person({  // There is seen "new mongoose.Schema" inside of That "Person" module , which purpose is to define what mode we save them into database.
+       // "id" values generetalogic is determined to inside of "generateId()" function 
        id: generateId(), // We are creating "id" object, which include that "generateId()" function current value
-       name: getId.name, // We are creating "name" object, =>  which indluce that "getId.name" it same as => request.body.name
-       number: getId.number,// We are creating "number" object that get value =>  "getId.number" it is same as => request.body.number 
+       name: getId.name, // So "name" => String,  variables "get.id.name" changes to under persons collection => persons.name
+       number: getId.number,  // "number" => String, variable "get.id.number" changes to under persons collection => persons.number
        
       })
 
 
 
-      // We creating persons object with Person construction function 
+      // We creating persons object with  createdata construction function 
       // We answering  request  with save operation  inside  of callback function, For this we make sure that only if operation will success.
-      createdata.save().then(savedPerson=> {  //  callback functions parameter "savedperson", which is saved persons  
-        response.json(savedPerson) // "response.json" purpose is to answer and return that () in json.mode 
+      person.save().then(savedperson=> {  //  callback functions parameter "savedperson", which is saved persons  
+        response.json(savedperson) // "response.json" purpose is to answer and return that () in json.mode 
+        console.log(savedperson) // "console.log()" purpose is to print that variables values back to user
         // Even Though we answering Http request with "Json"formed mode 
 
       })

@@ -30,7 +30,7 @@ mongoose.connect(url, {
 
 // We initalize variable "personSchema", which purpose is to determine which  mode  we save them  into  phonebook database
 // So practically it means and tells what mode they will be saved to database.
-  const  PersonSchema = new mongoose.Schema({
+  const  personSchema = new mongoose.Schema({
     name: String, // We initalize variable name, which is found in database => persons.name
     number: String // We initalize variable number, which is found in database => persons.number
   })
@@ -38,7 +38,7 @@ mongoose.connect(url, {
 // We determine variable "Person", which is equal as "mongoose.model()" function. Notice that if "persons" value would be "Christo", then data will move under to chistos collection.
 // This mean that Mongoose.DB will automatically change and move all letters to small and will put S letter to end of that. 
 // So function in belov will get  => 'persons' variable and  "mongoframe" values.
-  const Person  =  mongoose.model('Person', PersonSchema)
+  const Person  =  mongoose.model('Person', personSchema)
 
   // We determine   model Post, where First parameter String of Post determine that mongoose saves similar object of persons to collection name as persons.
   // As we see that is in plural mode because mongoose  convention  is to determine automatically that collension as the plural.

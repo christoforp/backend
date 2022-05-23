@@ -28,14 +28,14 @@ mongoose.connect(url)
 
 // We initalize variable "personSchema", which purpose is to determine, which mode we save those object into database. 
 // So practically this means that, which mode they will be saved on the database.
-const PersonSchema = new mongoose.Schema({
+const personSchema = new mongoose.Schema({
     name: String, // We determine variable name, which is found in database => persons.name
     number: String, // We initalize variable "number", which is found in database  => persons.number
 
 })
 
 // We de can determine with this that which mode it show Json data
-PersonSchema.set('toJSON', {
+personSchema.set('toJSON', {
     transform: (document, returnedObject) => { // We can make changes to data with "transoform" function before we return it to user
         returnedObject.id = returnedObject._id.toString() // We initalize variable "returnedObject.id", which is equals as "returnedObject._id.toString()"
         delete returnedObject._id  // We are using "delete returnedObject._id" because we wanto get rid of object indpendent identifier
@@ -46,7 +46,7 @@ PersonSchema.set('toJSON', {
 
 
 
-module.exports = mongoose.model('persons', PersonSchema) // We are using determining "mongoose" own module with "moduule.exports", So Its external section are seen when determine value for that "moduule.exports" it get value => "Person"
+module.exports = mongoose.model('persons', personSchema) // We are using determining "mongoose" own module with "moduule.exports", So Its external section are seen when determine value for that "moduule.exports" it get value => "Person"
 // There is no seen another things inside of that "module" like as Url or mongoose.
 // "mongoose.model"  will automatically move that model in MongoDB for example "Person" will move automatically into "persons" collection.
 // We take that export (function) to  use in application index.js file.

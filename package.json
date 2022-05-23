@@ -388,7 +388,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "watch": "nodemon person.js"
+    "watch": "nodemon person.js",
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
