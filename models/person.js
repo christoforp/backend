@@ -53,4 +53,3 @@ module.exports = mongoose.model('persons', personSchema) // We are using determi
 // mongoose  convention  is to determine automatically that collension as the plural and changes big letter into small.
 
 
-
