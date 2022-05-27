@@ -391,6 +391,7 @@
     "watch": "nodemon person.js",
     "dev": "nodemon index.js"
   
+  
   },
   "repository": {
     "type": "git",

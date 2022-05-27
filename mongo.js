@@ -7,6 +7,7 @@ if (process.argv.length<3) { // Whereas process.argv.lenght is less than 3, then
   process.exit(1) // This fucntion will stop running application with "process.exit(1)"
 }
 
+
   // Aim part of this exercises is to add data to MongoDB with node.js terminal, So if we want add a new person it will happen as follow => "node mongo.js password "Christofor Pavlidi" "040-4659788" and this equal as process.argv[0], process.argv[1], process.argv[2], process.argv[3], process.argv[4]"
 const password = process.argv[2] // We initalize function "password", which purpose is to get into command line parameters. So the code assume that it value in parametes mode of user what have been creating in Mongo Atlas
 // It is equal as "commandline parameter" "process.argv[2]"

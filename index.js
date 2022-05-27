@@ -7,6 +7,7 @@ const morgan = require('morgan') // We initalize variable "morgan", which have t
 const cors = require("cors") // We initalize variable "cors", which have to use "cors" middlware library 
 const app  = express() // We initalize variables, which purpose is to create express application.
 const Person =  require('./models/person') // We initalize variable "Person" and taking its model into account with "require('./models/persons.js)"
+const person = require('./models/person')
 
 
 
@@ -169,7 +170,6 @@ app.get('/api/info', (request, response) => { // When user try to site "http:loc
 
 })
 
-})
 
 
 
@@ -186,15 +186,17 @@ app.get('/api/persons/:id', (request, response, next) => { // When user trying t
   }
 }) 
 
+
 // We creating event handler ".catch(error => next(error))", which purpose is to move "errorhandler" to  forward with "next"() function 
 // As we seen in "app.get('./", () next is added to "eventhandler" for  third parameter 
 .catch(error => 
-  {
-    next(error)
-}) // If "next()" function is called by parameter, then it continue its execution to "errorhandler" middleware.
-//  whereas we using just  "next()"" it  going to execute  next route or middlevare 
+    next(error))
+     // If "next()" function is called by parameter, then it continue its execution to "errorhandler" middleware.
+       //  whereas we using just  "next()"" it  going to execute  next route or middlevare 
 
      // Whereas returning promise  of "findById" goes into rejected mode, then we answering request with HTTP "statuscode(500) internal error" => "response.status(500).end()"
+})
+
 
  
 
@@ -258,6 +260,25 @@ const generateId= () => {  // id" values generatinglogic is determined to inside
 }
 
 
+const ID = Number(request.params.id) // We initalize variable "ID", Which is also found in "app.get('/api/persons/:id") section. It is equal as "Number('') function. We are using "request.params.id", which purpose is to get into parameters id with "request.params.id", So when user trying to go site => "http://localhost:3000/api/persons/1"  it apply that id object value and return it in answer to under  "ID" variable.
+    console.log("Next it print persons variables values before deleting.") // It print that text visible to terminal.
+    console.log(persons) // We are using "console.log(persons)", which print that value to visible to the terminal.
+    persons = persons.filter(person => person.id !== ID) // We filtered that  table, which is inside of that "persons" variable that remains only those value, which are false with "ID"
+    console.log("Next it print person variables values after deleting to terminal.") // It print that text visible to terminal. 
+    console.log(persons) // We are using "console.log(persons)", which print that value to visible to terminal.
+    
+    if(persons) {  // We are using "if()" function to if "persons" request will work then => "http://localhost:3000/api/persons/2" it return "persons" variables values back to visible for user in json.mode 
+
+      response.json(persons) // "response.json(persons) return that variables value in to json.mode"
+      console.log(persons) // We are using console.log(persons), which print that value to visible to the terminal 
+    }else{
+     response.status(204).end()  // if  user try to go site => http//:localhost:3000/api/persons", which id value is not found and function is not going to happen, then it return request with "statuscode(404)
+    }
+
+
+    
+
+
   
 
       // We initalize variable "person",which utilize Person{...} function, So it means that that we have been created separated module for "Person"
@@ -285,54 +306,105 @@ const generateId= () => {  // id" values generatinglogic is determined to inside
 
   })
 
+
+
   
 
-
-
     
-    // When user trying to go site "http:localhost/api/persons/id:", which purpose is to handle  "HTTP delete request", which are mode "api/persons" > id[1,2,3,4,5], then it return answer back to user. 
-  app.delete('/api/persons/:id', (request, response) => {      // We determine application (event handler), which purpose is to get application => "/api/persons/:id" becoming  "HTTP" request.
+  
+
+  // When user trying to go site "http:localhost/api/persons/id:", which purpose is to handle  "HTTP delete request", which are mode "api/persons" > id[1,2,3,4,5], then it return answer back to user. 
+  app.delete('/api/persons/:id', (request, response, next) => { // We determine application (event handler), which purpose is to get application => "/api/persons/:id" becoming  "HTTP" request.
     Person.findByIdAndRemove(request.params.id).then(result  => {   
-                                                                   // If user want to delete person, which "id"  (2), then "request.params.id" get value 2 
-                                                                   //  Answer of both cases is 204 No Content So if => "persons" object removing happens remove  if object is remover or  is not found any object even Id would been  right. 
-      response.status(204).end()                                  // We can check if that resource was actually deleted in base with  "callback" function .then(result) and we can also return response with other statuscode if that it is necessary. 
+    // If user want to delete person, which "id"  (2), then "request.params.id" get value 2 
+    //  Answer of both cases is 204 No Content So if => "persons" object removing happens remove  if object is remover or  is not found any object even Id would been  right. 
+      response.status(204).end() // We can check if that resource was actually deleted in base with  "callback" function .then(result) and we can also return response with other statuscode if that it is necessary. 
     })
       // We answering HTTP "request" with statuscode(204). "No content"
       .catch(error  => { // Whereas there is coming problem when deleting, So promise is end up to (rejected), Then we conduct things inside of that {...} function 
-
-       console.log(error) // Print that  variables "error" value visible in terminal& console  for user. 
-      response.status(400).send({errorMessage: "there was problem remove delete from the database. Please Try again!:)" }) // 
-      })
+       next(error)         
+     
 
      // Returning with response variable "400" bad request and same time that reason and text. 
 
-
-
-    const ID = Number(request.params.id) // We initalize variable "ID", Which is also found in "app.get('/api/persons/:id") section. It is equal as "Number('') function. We are using "request.params.id", which purpose is to get into parameters id with "request.params.id", So when user trying to go site => "http://localhost:3000/api/persons/1"  it apply that id object value and return it in answer to under  "ID" variable.
-    console.log("Next it print persons variables values before deleting.") // It print that text visible to terminal.
-    console.log(persons) // We are using "console.log(persons)", which print that value to visible to the terminal.
-    persons = persons.filter(person => person.id !== ID) // We filtered that  table, which is inside of that "persons" variable that remains only those value, which are false with "ID"
-    console.log("Next it print person variables values after deleting to terminal.") // It print that text visible to terminal. 
-    console.log(persons) // We are using "console.log(persons)", which print that value to visible to terminal.
-    
-    if(persons) {  // We are using "if()" function to if "persons" request will work then => "http://localhost:3000/api/persons/2" it return "persons" variables values back to visible for user in json.mode 
-
-      response.json(persons) // "response.json(persons) return that variables value in to json.mode"
-      console.log(persons) // We are using console.log(persons), which print that value to visible to the terminal 
-    }else{
-     response.status(204).end()  // if  user try to go site => http//:localhost:3000/api/persons", which id value is not found and function is not going to happen, then it return request with "statuscode(404)
-    }
-
+      })
     }
   )
-// When user trying to go site => "Http://localhost:3001/api/persons", which purpose is to replace  and modifying independent resurs data. 
-                                                         // We determine "event handler" for application, which purpose is to PUT becoming HTTP request.                              
-    
-// Phonebook information updating can permit phonebooks information change of importance 
-// "persons" updater "findByIdAndUpdate"  can permit persons change of importance. 
-// eventhandler get also parameters orginal UpdatePerson  Updated object before change in the status quo
-// We had also been adding  parameter "{new: true}", that we get changes variables object back to the caller.
+
+
+
   
+
+
+  // When user trying to go site => "Http://localhost:3001/api/persons", which purpose is to replace  and modifying independent resurs data. 
+                                                         // We determine "event handler" for application, which purpose is to PUT becoming HTTP request.                              
+app.put('./api/persons/:id', (request, response,next) => {
+
+  const getId = request.body //  We initialize variable "getId", which  is equal as  "request.body"
+    // We initalize variable "person",which utilize Person{...} function, So it means that that we have been created separated module for "Person"
+      // We initalize variable "person ", where we adding three different object  => ["name, "number"], which is seen "let persons"
+    const  updatePerson = {
+      name: getId.name, // So name => String, "get.id.name" variables move into persons collection => persons.name
+      number: getId.number // So number => String, "get.id.number" variables move into persons collection => persons.number
+
+    }
+
+
+
+    // Phonebook information updating can permit phonebooks information change of importance 
+    // "persons" updater "findByIdAndUpdate"  can permit persons change of importance. 
+    // eventhandler get also parameters orginal UpdatePerson  Updated object before change in the status quo
+    // We had also been adding  parameter "{new: true}", that we get changes variables object back to the caller.
+      
+Person.findByIdAndUpdate(request.params.id, updatePerson, {new: true})  // Notice that "Persons.findByIdAndUpdate" parameter should be normal "javascript" object not construction function "Person", what have been created a new persons. 
+  // Notice that "Persons.findByIdAndUpdate" parameter should be normal "javascript" object not construction function "Person", what have been created a new persons. 
+
+  .then(updatedPerson => {
+    response.json(updatedPerson)  // return  data inside of "updatedPerson" variable  with json mode 
+    console.log(updatedPerson) // Print that "updatedPerson" variables value back to the terminal 
+  })
+
+  .catch(error =>  
+    // We are creating "errorhandler" => ".catch(error => next())", which purpose is to move that "errorhandler" into next function 
+         // if " next()  function is called by parameters, then it continue its execution or condcution in express errorhandler middleware
+                        // If "next()"   function is called without parameters, then it going to move it to next route or middleware. 
+    next(error))
+  })
+  
+
+
+
+
+  
+
+
+
+
+
+// We creating " function "errorhandlermiddleware", which get four parameters => [error, request, response, next]
+const errorhandler = (error, request, response,next) => { // "errorhandler" checks if its purpose is  typical error like "Cast error", whereas it is then it response request with response object. 
+  // Whereas it is not then it moves  handling of "Next()" function to  for express existent middleware
+  console.log(error.message) // Print that "error.message"  and its text in terminal&console. So if we trying to delete "persons" from database what is not found in database, then it print that => --- Cast to ObjectId failed for value "5" (type string) at path "_id" for model "persons" CastError error happened.  Please check error and try again!:) 
+  console.log(error.name) // Print that "error.name" value visible for terminal with this we can decide what if condition we are going to use that value and with that we can print that text to terminal.
+
+  if(error.name=== 'CastError'){ // "errorhandler" check if its typical as "CastError" if it then answer request with respons.status(). 
+    console.log("error happened.  Please check error and try again!:)")  // It print that text visible terminal and response status 404 Not Found and error message, which is seen also Postman or browser.
+    return response.status(400).send({errorMessage: 'Malformatted id'})
+             // We are also adding separate answer of error reason => ({error: 'malformatted id'})
+
+  }
+
+  next(error) // "middleware" function "next()" is called with parameter, then it continue its execution in "errorhandler" "middleware" and print that error visible in terminal
+  // If "next()" middleware function is called without parameter then it move its execution to another route or middleware.
+
+  
+}
+
+
+// We taking "errorhandler" middleware function into account with => "app.use(errorhandler)" 
+// Notice that "app.use(errorhandler)" should have been taken account after other middlewares.
+app.use(errorhandler)
+
 
 
 

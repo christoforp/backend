@@ -46,6 +46,8 @@ personSchema.set('toJSON', {
 
 
 
+
+
 module.exports = mongoose.model('persons', personSchema) // We are using determining "mongoose" own module with "moduule.exports", So Its external section are seen when determine value for that "moduule.exports" it get value => "Person"
 // There is no seen another things inside of that "module" like as Url or mongoose.
 // "mongoose.model"  will automatically move that model in MongoDB for example "Person" will move automatically into "persons" collection.
