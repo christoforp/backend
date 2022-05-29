@@ -1,14 +1,12 @@
 require('dotenv').config()  // We are taking  environment variables of 'dotenv' file into account  with  command "require('dotenv).config()and define same way as we using another environment variables => process.env.MONGODB_URI. 
 // It is also important that we take "dotenv" into account before  import model "Person", because then we make sure that initialized environment variables in file is initalized when we import modules code.
-
+const Person =  require('./models/person')  // We initalize variable "Person" and taking its model into account with "require('./models/persons.js)"
 
 const express = require("express") // We initialize variables "express", which have to use express library.
 const morgan = require('morgan') // We initalize variable "morgan", which have to use "morgan" "middleware" library. 
 const cors = require("cors") // We initalize variable "cors", which have to use "cors" middlware library 
-const app  = express() // We initalize variables, which purpose is to create express application.
-const Person =  require('./models/person') // We initalize variable "Person" and taking its model into account with "require('./models/persons.js)"
 const person = require('./models/person')
-
+const app  = express() // We initalize variables, which purpose is to create express application.
 
 
 
@@ -23,7 +21,7 @@ const person = require('./models/person')
              // "middleware" morgan can have acces to HTTP request and erros, Therefore, when application conduct a new HTTP request  terminal prints => POST, /api/persons 12.771 ms, POST /api/persons 200 58 -12.771 ms so method => (':method :url: status: res[content.lenght] -response-time ms) 
             // We are using "app.use(morgan())", where are taking "morgan" middleware into account with "use" method and  we are  also creating a new logger with  format string of predefined token. This will use its build "method",  identify "url" "status" res:[content-length] "response time in ms". 
              
-            app.use(morgan(":method : url :status :res[content-length]- :response-time ms :Post"))
+            app.use(morgan(":method : url :status :res[content-length]- :response-time ms :PostPerson"))
               
             // We initalize "morgan.token()" and define with that method with name and callback function. This callback function is expected to return string value. 
             // morgan will run "callback" function as each  times, when console occurs using the token.
@@ -32,7 +30,7 @@ const person = require('./models/person')
             // Always application conduct "Http" request x, then it print also this  data inside of "request.body" to the terminal with "JSON.mode" 
             // If this "request.body" is empty, then it only print {""} string to terminal.
             // tokens in morgan is identified ":" symbol. "morgan" allows you create your own token with "morgan.token()" method.
-             morgan.token("Post", function (request, response){
+             morgan.token("PostPerson", function (request, response){
               return JSON.stringify(request.body)   // We are using return "JSON.stringify()" method, which purpose is to convert javascript value to JSON Mode.
               //If value have JSON method, then it is responsible to define what data has been searilized.
             
@@ -43,18 +41,6 @@ const person = require('./models/person')
 
  // We taking "requestLogger" Middleware function into accout, which have three parameters => ["res, req, next"]
  // "next()"  function purpose is to move that "errorhandling" to express "errorhandling" middleware or without parameter it moves to next route or middleware 
-const requestLogger = (request, response , next) => {
-  console.log('Method: ', request.method) // Print that "Method" and request.method =>  Method: Get
-  console.log('Body: ', request.body) // Print that "Body" and request.body => Body:
-  console.log('Path: ' , request.path)  // Print that "Path" and request.path => 
-  console.log('---')
-  next() //  => "Next()" function  purpose is to move that to  move control for next route or middleware
-}
- 
- 
-     app.use(requestLogger) // We taking "requestLogger" into account because "request.body" is empty => "app.use(requestLogger)"
-                            // Note that "app.use(express.json())" should have been taken into account before this, because "request.body" is empty. 
-
 
 
 
@@ -114,6 +100,49 @@ let persons = [ // We initalized variables to, where we adding 5 different value
 
 
 
+// When user trying to go site "http://localhost:3000/api/persons", which purpose is to handle all HTTP POST request.
+app.post('/api/persons', (request,response) => { // We determine (event handler), which purpose is to get application to mode ""./api/persons" becoming HTTP request.
+  // When are adding something in Postman, then we are choosing => body and we choose raw mode and we have to make sure it is in Json.mode
+  // This means that when values are adding to => POST "http://localhost:3000/api/persons", then variable request saves it data with (request.body) receives data and those current data will initalize back to  "getId" variable. 
+  const getValue= request.body  // We initialize variable "getId", which is equal as request.body
+
+  if(!getValue.name || !getValue.number) { // We are using "if()" function if "getId.name" or "getId.number" values is empty, so if there is missing something, When we trying to add a new values to table as result we are return things inside of {...}. 
+    console.log('No empty values. Please add either name or number and try again!:)') // "console.log()" Print that text to visible terminal.
+                                                       // It print that value and shows Content-type in Postman or RestClient. This  also help to solve "Content-type header" problem, if it missing. 
+     return response.status(400).json({ // We are using "response.status(204).json" to if there is any missing data, then we answer request with statuscode(400) bad request which also print that text to the terminal.
+      error: "Some content is missing"}) // Object name is "error", which include that text, this is seen with Postman .
+     }
+
+
+    
+
+
+
+
+
+  // We initalize variable "person",which utilize ShowPerson{...} function, So it means that that we have been created separated module for "Person"
+    // We initalize variable "person ", where we adding three different object  => ["id","name","number"], which is seen "let persons"
+    const person =  new Person({  // There is seen "new mongoose.Schema" inside of That "Person" module , which purpose is to define what mode we save them into database.
+      // "id" values generetalogic is determined to inside of "generateId()" function 
+      // We are creating "id" object, which include that "generateId()" function current value
+      name: getValue.name, // So "name" => String,  variables "get.id.name" changes to under persons collection => persons.name
+      number: getValue.number,  // "number" => String, variable "get.id.number" changes to under persons collection => persons.number
+      
+     })
+
+     // We creating persons object with  "Person" construction function they are like as Javascript object, So they have combination of method that they can save object into database.
+    // We answering  request  with save operation  inside  of callback function, For this we make sure that only if operation will success.
+    person.save().then(savedPerson=> {  //  callback functions parameter "savedperson", which is saved persons  
+      response.json(savedPerson) // "response.json" purpose is to answer and return that () in json.mode 
+      console.log(savedPerson) // "console.log()" purpose is to print that variables values back to user
+      // Even Though we answering HTTP request with "Json"formed mode 
+
+    })
+
+   
+
+})
+
 
 
 
@@ -137,6 +166,27 @@ app.get('/api/persons', (request, response) => { // We determine application (ev
 
 
 
+  // When user trying to go site "http:localhost/api/persons/id:", which purpose is to handle  "HTTP delete request", which are mode "api/persons" > id[1,2,3,4,5], then it return answer back to user. 
+  app.delete('/api/persons/:id', (request, response, next) => { // We determine application (event handler), which purpose is to get application => "/api/persons/:id" becoming  "HTTP" request.
+    Person.findByIdAndRemove(request.params.id).then(person => {   
+     // If user want to delete person, which "id"  (2), then "request.params.id" get value 2 
+     //  Answer of both cases is 204 No Content So if => "persons" object removing happens remove  if object is remover or  is not found any object even Id would been  right. 
+       response.status(204).end() // We can check if that resource was actually deleted in base with  "callback" function .then(result) and we can also return response with other statuscode if that it is necessary. 
+     })
+       // We answering HTTP "request" with statuscode(204). "No content"
+       .catch(error  =>  // Whereas there is coming problem when deleting, So promise is end up to (rejected), Then we conduct things inside of that {...} function 
+        next(error))
+   })
+        
+      
+        
+      // Returning with response variable "400" bad request and same time that reason and text. 
+ 
+       
+ 
+ 
+ 
+ 
 
 
 
@@ -146,37 +196,39 @@ app.get('/api/persons', (request, response) => { // We determine application (ev
 
  // We initalize variable "maxValue", which uses "Math.max" function, that can we use this we have to create copy of that table, then it can apply all values, where is "id" name object and then it return highest value "maxValue" to user.
 
-  const maxId= Math.max(...persons.map(findId => findId.id))
-  const showId = `<h1>There is total of ${maxId} different persons inside info!</h1>` // We initalize variable "showValue", which is equal as that text. There is also "maxValue" inside that text.
-
   
-  var  today = new Date(); // We initalize variable "today", which is equal as new Date();,  
-
-  var date = today.toGMTString();  // We initalize variable "date"   and method "today.toGTMString() convert date to GMT (Greenwich mean time)" Using the o
-
-  console.log(date) // This "console.log(date). This print "date" to visible in console and terminal =>  ("Friday, 29 Apr 2022 09:36:32 GMT")
 
 
 
-
-app.get('/api/info', (request, response) => { // When user try to site "http:localhost:3000/api/info", then it always return it back to with answer to user with variables "response" 
-  Person.find({}).then(person => { // It apply all values from database and return it back to user
-  response.send(`<h2>There is total  of ${maxId} different persons in info! <br><br>${today}(Greenwich mean time)</h2>`) // we determine application (event handler), which purpose is to get application => "/api/info" becoming  "HTTP" request.   
-  console.log(maxId) // This "console.log(maxValue)" prints that value "maxValue" to visible to the terminal. 
-  console.log(showId)
-  console.log(today) // This "console.log(today)" prints that value "today" to visible to the  terminal.   
-  response.json(person)  // We are answering to "request" with response variables and express moves it automatically  to json.mode 
+app.get('/api/info', (request, response, next) => { // When user try to site "http:localhost:3000/api/info", then it always return it back to with answer to user with variables "response" 
+  Person.find({}).then(Person => { // It apply all values from database and return it back to user
+    var  today = new Date() // We initalize variable "today", which is equal as new Date();,  
+    var date = today.toGMTString();  // We initalize variable "date"   and method "today.toGTMString() convert date to GMT (Greenwich mean time)" Using the o
+    const Persons = Person.length   // We initalize variable "Persons", which  is equal as => "Person.length", So it calculate how many different value is in database => it return that value back to under variable.
+    
+    response.send(`<h2>There is total  of ${Persons} different persons in info! <br><br>${date}(Greenwich mean time)</h2>`) // we determine application (event handler), which purpose is to get application => "/api/info" becoming  "HTTP" request.   
+  console.log(today) // This "console.log(today)" prints that value "today" => "newDate()" => Date.  to visible to the  terminal.   
+  console.log(Persons) // "console.log()", Print that variables values into terminal
+  console.log('Different persons have been listed on the phonebook')
+  response.json(Persons)  // We are answering to "request" with response variables and express moves it automatically  to json.mode 
   // Then we are answering "HTTP" request with list object with JSON method As result there is now found variables "persons"  returned object of MongoDB in table because We are answering request with JSON method.
 
 })
 
+.catch(error =>  // Whereas result is going to rejected or error, when we trying to go => "http://localhost:3001/api/info". 
+//then we using catchblock method => .catch{...}, So it answer request with accordance response. 
+  next(error)) // "middleware errorhandler function" => "next(error)) move it handling to "errorhandlermiddleware"
+  // Whereas "next()" middleware function have been used without parameters, then it going to move it next middleware or route 
+
+
+})
 
 
 
 // When user try to site "http:localhost:3000/api/persons/id:", which purpose is to handle all "HTTP get request, which are mode "api/persons" > id[1,2,3,4,5], then it return answer back to user. 
 app.get('/api/persons/:id', (request, response, next) => { // When user trying to go site "http://localhost:3001/api/2", then "params.id" variable is equal as 2
   Person.findById(request.params.id).then(person=> {                                            // We changes independent persons review  to mode => "Person.findById().then({})"
-  // When "findById"  method get wrong id value of its argunment it throws error as result it goes rejected mode  then we using callback function of catch block => ".catch(error) => { console.log(error) res.status().send({})}"
+  // When "findById"  method get wrong id value of  argunment it throws error as result it goes rejected mode  then we using callback function of catch block => ".catch(error) => { console.log(error) res.status().send({})}"
   
     if(person) {
     response.json(person)
@@ -198,82 +250,13 @@ app.get('/api/persons/:id', (request, response, next) => { // When user trying t
 })
 
 
- 
 
 
 
-  const ID =  Number(request.params.id) // We initalize variable "ID", which is equal as "Number('')" function. We are using "request.params.id") that we can get into parameters id with "request.params.id", So When user trying to go site => "http://localhost:3000/api/persons/2" it apply that id object value and return it in answer to under "ID"
-  const person = persons.find(person => person.id=== ID)  // We initalize variable "person", which apply "persons" value and its "id" object is equal as "ID"  
-
-  if(person) { // We are using "if()" function to if "persons" request will work, then => "http://localhost:3000/api/persons/2" it return  "persons" variables value back to visible for user in Json.mode
-    response.json(person)   // "reponse.json()" return that variables value  in json.mode.
-    console.log(person) // We are using "console.log(person)", which print that value to visible to the terminal 
-  }else{
-    response.status(404).end() // if  user try to go site => http//:localhost:3000/api/persons", which id value is not found and function is not going to happen, then it return request with "statuscode(404)
-    console.log(person)  // We are using "console.log(person)", which print that value visible to the terminal 
-  }
-})
-
-// We initalize and using "generateId" function, which are conduct (..) things inside that function, when use trying to add new values to  "persons" table. ('./api/persons') 
-const generateId= () => {  // id" values generatinglogic is determined to inside of "generateId()" function
-  const minId = persons.length +1  // We initalize variable "minId", which is equal as "persons.length +1", So First we calculate how many different values is found in that "persons" that table, then it add +1. 
-  console.log(`Minimum Id is now: ${minId}`) // "console.log()" print that text to terminal and at the same time it shows that "minId" current Id
-  const maxId = minId +1  // We initalize variable "maxId", which is equal as  "minId +1", so First we take that "minId" current id then it add +1   
-  console.log(`Maximum Id  is now:${maxId}`) // "console.log()" print that text to terminal and at the same time it shows that "maxId"   current Id 
-  const someId = Math.floor(Math.random()*(maxId- minId) + minId) // We initalize variable "someId", which calculate that function  => "Math.random()" and gives values X between [0,1] in desimal mode. function "Math.floor()" return highest number, which is smaller or bigger than given number.
-  console.log(`Some Id is ${someId}, which will be inserted into id object`)            // "console.log()" print that text to terminal and at the same time it shows that "someId" variables current value. 
-  return someId+1  // "return someId"  return that "randomValue" variables value => "newId"
-}
 
 
 
-// When user trying to go site "http://localhost:3000/api/persons", which purpose is to handle all HTTP POST request.
-  app.post('/api/persons', (request,response) => { // We determine (event handler), which purpose is to get application to mode ""./api/persons" becoming HTTP request.
-    // When are adding something in Postman, then we are choosing => body and we choose raw mode and we have to make sure it is in Json.mode
-    // This means that when values are adding to => POST "http://localhost:3000/api/persons", then variable request saves it data with (request.body) receives data and those current data will initalize back to  "getId" variable. 
-    const getId= request.body  // We initialize variable "getId", which is equal as request.body
-  
-    if(!getId.name || !getId.number ===undefined) { // We are using "if()" function if "getId.name" or "getId.number" values is empty, so if there is missing something, When we trying to add a new values to table as result we are return things inside of {...}. 
-      console.log('No empty values. Please add either name or number and try again!:)') // "console.log()" Print that text to visible terminal.
-                                                         // It print that value and shows Content-type in Postman or RestClient. This  also help to solve "Content-type header" problem, if it missing. 
-       return response.status(400).json({ // We are using "response.status(204).json" to if there is any missing data, then we answer request with statuscode(400) bad request which also print that text to the terminal.
-        errorMessage: "Some content is missing" // Object name is "error", which include that text, this is seen with Postman .
 
-      })  
-
-    }
-
-
-     // We initalize variable "lookpersons", which uses "persons.find()" function table", where it apply all "persons.name" values and  compare them if they will fit with  "get.Id.name" variables. 
-    const lookpersons = persons.some(findPerson => findPerson.name === getId.name) // Whereas  this will implement, so  it return it value "true", whereas it doesen't happen then it return value "false"
-   console.log(`Looking if persons find has currently exiting name, which you are trying to add. Result is => ${lookpersons}`) // "console.log()" print that text to terminal and at the same time it shows "lookpersons" current values , which can be also  (true or false)
-
-  if(lookpersons === true) { // We are using "if()" function if "lookpersons" is get value true so => if( "lookpersons" === true), then it return things inside of {...}
-    console.log('You tried add persons, which is already exist in the phonebook!. Please try again:)') // "console.log()" print that text to terminal
-  
-    return response.status(400).json({ // We are using return "response.status()", which return an error with statuscode(400) "bad request",   if there is any missing content 
-    errorMessage: "Name must be unique, Please try again!:)"  // it also print that text to the terminal. 
-  
-  
-  
-  })
-}
-
-
-const ID = Number(request.params.id) // We initalize variable "ID", Which is also found in "app.get('/api/persons/:id") section. It is equal as "Number('') function. We are using "request.params.id", which purpose is to get into parameters id with "request.params.id", So when user trying to go site => "http://localhost:3000/api/persons/1"  it apply that id object value and return it in answer to under  "ID" variable.
-    console.log("Next it print persons variables values before deleting.") // It print that text visible to terminal.
-    console.log(persons) // We are using "console.log(persons)", which print that value to visible to the terminal.
-    persons = persons.filter(person => person.id !== ID) // We filtered that  table, which is inside of that "persons" variable that remains only those value, which are false with "ID"
-    console.log("Next it print person variables values after deleting to terminal.") // It print that text visible to terminal. 
-    console.log(persons) // We are using "console.log(persons)", which print that value to visible to terminal.
-    
-    if(persons) {  // We are using "if()" function to if "persons" request will work then => "http://localhost:3000/api/persons/2" it return "persons" variables values back to visible for user in json.mode 
-
-      response.json(persons) // "response.json(persons) return that variables value in to json.mode"
-      console.log(persons) // We are using console.log(persons), which print that value to visible to the terminal 
-    }else{
-     response.status(204).end()  // if  user try to go site => http//:localhost:3000/api/persons", which id value is not found and function is not going to happen, then it return request with "statuscode(404)
-    }
 
 
     
@@ -281,71 +264,24 @@ const ID = Number(request.params.id) // We initalize variable "ID", Which is als
 
   
 
-      // We initalize variable "person",which utilize Person{...} function, So it means that that we have been created separated module for "Person"
-      // We initalize variable "person ", where we adding three different object  => ["id","name","number"], which is seen "let persons"
-     const person = Person({  // There is seen "new mongoose.Schema" inside of That "Person" module , which purpose is to define what mode we save them into database.
-       // "id" values generetalogic is determined to inside of "generateId()" function 
-       id: generateId(), // We are creating "id" object, which include that "generateId()" function current value
-       name: getId.name, // So "name" => String,  variables "get.id.name" changes to under persons collection => persons.name
-       number: getId.number,  // "number" => String, variable "get.id.number" changes to under persons collection => persons.number
-       
-      })
+      
 
 
 
-      // We creating persons object with  "Person" construction function they are like as Javascript object, So they have combination of method that they can save object into database.
-      // We answering  request  with save operation  inside  of callback function, For this we make sure that only if operation will success.
-      person.save().then(savedperson=> {  //  callback functions parameter "savedperson", which is saved persons  
-        response.json(savedperson) // "response.json" purpose is to answer and return that () in json.mode 
-        console.log(savedperson) // "console.log()" purpose is to print that variables values back to user
-        // Even Though we answering HTTP request with "Json"formed mode 
-
-      })
-
-     
-
-  })
-
-
+      
 
   
-
-    
-  
-
-  // When user trying to go site "http:localhost/api/persons/id:", which purpose is to handle  "HTTP delete request", which are mode "api/persons" > id[1,2,3,4,5], then it return answer back to user. 
-  app.delete('/api/persons/:id', (request, response, next) => { // We determine application (event handler), which purpose is to get application => "/api/persons/:id" becoming  "HTTP" request.
-    Person.findByIdAndRemove(request.params.id).then(result  => {   
-    // If user want to delete person, which "id"  (2), then "request.params.id" get value 2 
-    //  Answer of both cases is 204 No Content So if => "persons" object removing happens remove  if object is remover or  is not found any object even Id would been  right. 
-      response.status(204).end() // We can check if that resource was actually deleted in base with  "callback" function .then(result) and we can also return response with other statuscode if that it is necessary. 
-    })
-      // We answering HTTP "request" with statuscode(204). "No content"
-      .catch(error  => { // Whereas there is coming problem when deleting, So promise is end up to (rejected), Then we conduct things inside of that {...} function 
-       next(error)         
-     
-
-     // Returning with response variable "400" bad request and same time that reason and text. 
-
-      })
-    }
-  )
-
-
-
-  
-
 
   // When user trying to go site => "Http://localhost:3001/api/persons", which purpose is to replace  and modifying independent resurs data. 
                                                          // We determine "event handler" for application, which purpose is to PUT becoming HTTP request.                              
 app.put('./api/persons/:id', (request, response,next) => {
 
-  const getId = request.body //  We initialize variable "getId", which  is equal as  "request.body"
+  const getValue = request.body //  We initialize variable "getId", which  is equal as  "request.body"
     // We initalize variable "person",which utilize Person{...} function, So it means that that we have been created separated module for "Person"
       // We initalize variable "person ", where we adding three different object  => ["name, "number"], which is seen "let persons"
-    const  updatePerson = {
-      name: getId.name, // So name => String, "get.id.name" variables move into persons collection => persons.name
-      number: getId.number // So number => String, "get.id.number" variables move into persons collection => persons.number
+    const  person = {
+      name: getValue.name, // So name => String, "get.id.name" variables move into persons collection => persons.name
+      number: getValue.number // So number => String, "get.id.number" variables move into persons collection => persons.number
 
     }
 
@@ -356,7 +292,7 @@ app.put('./api/persons/:id', (request, response,next) => {
     // eventhandler get also parameters orginal UpdatePerson  Updated object before change in the status quo
     // We had also been adding  parameter "{new: true}", that we get changes variables object back to the caller.
       
-Person.findByIdAndUpdate(request.params.id, updatePerson, {new: true})  // Notice that "Persons.findByIdAndUpdate" parameter should be normal "javascript" object not construction function "Person", what have been created a new persons. 
+Person.findByIdAndUpdate(request.params.id, person, {new: true})  // Notice that "Persons.findByIdAndUpdate" parameter should be normal "javascript" object not construction function "Person", what have been created a new persons. 
   // Notice that "Persons.findByIdAndUpdate" parameter should be normal "javascript" object not construction function "Person", what have been created a new persons. 
 
   .then(updatedPerson => {
@@ -370,7 +306,35 @@ Person.findByIdAndUpdate(request.params.id, updatePerson, {new: true})  // Notic
                         // If "next()"   function is called without parameters, then it going to move it to next route or middleware. 
     next(error))
   })
+
+
   
+
+
+
+
+  
+
+    
+  
+
+  // When user trying to go site "http:localhost/api/persons/id:", which purpose is to handle  "HTTP delete request", which are mode "api/persons" > id[1,2,3,4,5], then it return answer back to user. 
+  app.delete('/api/persons/:id', (request, response, next) => { // We determine application (event handler), which purpose is to get application => "/api/persons/:id" becoming  "HTTP" request.
+   Person.findByIdAndRemove(request.params.id).then(person => {   
+    // If user want to delete person, which "id"  (2), then "request.params.id" get value 2 
+    //  Answer of both cases is 204 No Content So if => "persons" object removing happens remove  if object is remover or  is not found any object even Id would been  right. 
+      response.status(204).end() // We can check if that resource was actually deleted in base with  "callback" function .then(result) and we can also return response with other statuscode if that it is necessary. 
+    })
+      // We answering HTTP "request" with statuscode(204). "No content"
+      .catch(error  =>  // Whereas there is coming problem when deleting, So promise is end up to (rejected), Then we conduct things inside of that {...} function 
+       next(error))
+  })
+       
+     
+       
+     // Returning with response variable "400" bad request and same time that reason and text. 
+
+      
 
 
 
@@ -400,6 +364,7 @@ const errorhandler = (error, request, response,next) => { // "errorhandler" chec
   
 }
 
+    
 
 // We taking "errorhandler" middleware function into account with => "app.use(errorhandler)" 
 // Notice that "app.use(errorhandler)" should have been taken account after other middlewares.

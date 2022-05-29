@@ -15,7 +15,8 @@ const password = process.argv[2] // We initalize function "password", which purp
 // When we run application with command mongo.js, then password add mongoose.database a new documents.
 
  // We initialize data base, where we get connection to data base. We are using url from MongoDB Library
- const url = `mongodb+srv://christoforp:christoforp@cluster0.osmk6.mongodb.net/?retryWrites=true&w=majority`
+ const database = `mongodb+srv://christoforp:christoforp@cluster0.osmk6.mongodb.net/myPhonebook?retryWrites=true&w=majority`
+ 
  
 
 
@@ -23,9 +24,10 @@ const password = process.argv[2] // We initalize function "password", which purp
 
  // "mongoose.connect(url)" purpose is to connect mongooseDB Database 
 
-mongoose.connect(url, {
+mongoose.connect(database, {
   useNewUrlParser: true,
   useUnifiedTopology: true})
+  
 
 
 
@@ -79,7 +81,7 @@ mongoose.connect(url, {
  // We Creating a new object in to database  with that  similar model "fetch" variable, which uses variables "Post" function
  // "models" are like as constructor functions, which creting a new javascript object according to parameters because they have been created by construction functions  they all have own model skills So practically it means that they can save object into database with methods. 
  
-    const fetch = new Person({
+    const person = new Person({
       name: nameConsole, // So name: String  =>  nameConsole and it moves database collections  => persons.name
       number: numberConsole // number: String  =>  numberConsole, which move to database collections => persons.number
     })
@@ -87,7 +89,7 @@ mongoose.connect(url, {
     
   // Whereas if condition will work, so if(process.argv.lenght is bigger than 4) then it conduct things inside of {...} function 
     if(process.argv.length > 4){
-      fetch  // We save data of "fetch.save" variables database, So it will be saved into collections => persons.name 
+      person  // We save data of "fetch.save" variables database, So it will be saved into collections => persons.name 
       .save().then(response =>{ 
           console.log(`You have added ${response.name} to the phonebook`)
           console.log(`you have added ${response.number}to the phonebook`)
