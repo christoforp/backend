@@ -34,9 +34,12 @@ mongoose.connect(database, {
 // We initalize variable "personSchema", which purpose is to determine which  mode  we save them  into  phonebook database
 // So practically it means and tells what mode they will be saved to database.
   const  personSchema = new mongoose.Schema({
-    name: String, // We initalize variable name, which is found in database => persons.name
-    number: String // We initalize variable number, which is found in database => persons.number
+      // We initalize variable name, which is found in database => persons.name
+    // We initalize variable number, which is found in database => persons.number
+    name: String,
+    number: String
   })
+
 
 // We determine variable "Person", which is equal as "mongoose.model()" function. Notice that if "persons" value would be "Christo", then data will move under to chistos collection.
 // This mean that Mongoose.DB will automatically change and move all letters to small and will put S letter to end of that. 

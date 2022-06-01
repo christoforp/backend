@@ -1,11 +1,10 @@
 require('dotenv').config()  // We are taking  environment variables of 'dotenv' file into account  with  command "require('dotenv).config()and define same way as we using another environment variables => process.env.MONGODB_URI. 
 // It is also important that we take "dotenv" into account before  import model "Person", because then we make sure that initialized environment variables in file is initalized when we import modules code.
 const Person =  require('./models/person')  // We initalize variable "Person" and taking its model into account with "require('./models/persons.js)"
-
 const express = require("express") // We initialize variables "express", which have to use express library.
 const morgan = require('morgan') // We initalize variable "morgan", which have to use "morgan" "middleware" library. 
 const cors = require("cors") // We initalize variable "cors", which have to use "cors" middlware library 
-const person = require('./models/person')
+
 const app  = express() // We initalize variables, which purpose is to create express application.
 
 
@@ -101,23 +100,10 @@ let persons = [ // We initalized variables to, where we adding 5 different value
 
 
 // When user trying to go site "http://localhost:3000/api/persons", which purpose is to handle all HTTP POST request.
-app.post('/api/persons', (request,response) => { // We determine (event handler), which purpose is to get application to mode ""./api/persons" becoming HTTP request.
+app.post('/api/persons', (request,response, next) => { // We determine (event handler), which purpose is to get application to mode ""./api/persons" becoming HTTP request.
   // When are adding something in Postman, then we are choosing => body and we choose raw mode and we have to make sure it is in Json.mode
   // This means that when values are adding to => POST "http://localhost:3000/api/persons", then variable request saves it data with (request.body) receives data and those current data will initalize back to  "getId" variable. 
   const getValue= request.body  // We initialize variable "getId", which is equal as request.body
-
-  if(!getValue.name || !getValue.number) { // We are using "if()" function if "getId.name" or "getId.number" values is empty, so if there is missing something, When we trying to add a new values to table as result we are return things inside of {...}. 
-    console.log('No empty values. Please add either name or number and try again!:)') // "console.log()" Print that text to visible terminal.
-                                                       // It print that value and shows Content-type in Postman or RestClient. This  also help to solve "Content-type header" problem, if it missing. 
-     return response.status(400).json({ // We are using "response.status(204).json" to if there is any missing data, then we answer request with statuscode(400) bad request which also print that text to the terminal.
-      error: "Some content is missing"}) // Object name is "error", which include that text, this is seen with Postman .
-     }
-
-
-    
-
-
-
 
 
   // We initalize variable "person",which utilize ShowPerson{...} function, So it means that that we have been created separated module for "Person"
@@ -138,11 +124,14 @@ app.post('/api/persons', (request,response) => { // We determine (event handler)
       // Even Though we answering HTTP request with "Json"formed mode 
 
     })
+     // If we trying to save  a new persons into database, which break validation rule, then operation throw an exception
+     // We are creating similar handler of creating a new persons, that it can passes any potential exeption to the   "error handler middleware" 
+     // So we make sure that eventhandler, which respond of that creating a new person, So basically it means that it send exception to the "error handler middleware"
 
-   
-
-})
-
+     .catch(error =>  // We are using  ".catch()" error function, which callbackfunction "error", which purpose is to move that "errorhandler" forward to the "next()" function.  
+      next(error)) // "next()"errorhandler middleware function move that handling  to "errorhandlermiddleware"  
+    })
+    
 
 
 
@@ -152,8 +141,8 @@ app.post('/api/persons', (request,response) => { // We determine (event handler)
 
 
 app.get('/api/persons', (request, response) => { // We determine application (event handler), which purpose is to get application to => "/api/persons"
-  Person.find({}).then(person =>{ // It apply all values from database and return it back to user. 
-  response.json(person) // We are answering to request  with response variables and express moves it automatically to json.mode
+  Person.find({}).then(persons =>{ // It apply all values from database and return it back to user. 
+  response.json(persons) // We are answering to request  with response variables and express moves it automatically to json.mode
     // Then we are answering "HTTP" request with list object with JSON method As result there is now found variables "persons"  returned object of MongoDB in table because We are answering request with JSON method.
 
 
@@ -275,6 +264,7 @@ app.get('/api/persons/:id', (request, response, next) => { // When user trying t
   // When user trying to go site => "Http://localhost:3001/api/persons", which purpose is to replace  and modifying independent resurs data. 
                                                          // We determine "event handler" for application, which purpose is to PUT becoming HTTP request.                              
 app.put('./api/persons/:id', (request, response,next) => {
+  const {name, number} = request.body
 
   const getValue = request.body //  We initialize variable "getId", which  is equal as  "request.body"
     // We initalize variable "person",which utilize Person{...} function, So it means that that we have been created separated module for "Person"
@@ -292,13 +282,14 @@ app.put('./api/persons/:id', (request, response,next) => {
     // eventhandler get also parameters orginal UpdatePerson  Updated object before change in the status quo
     // We had also been adding  parameter "{new: true}", that we get changes variables object back to the caller.
       
-Person.findByIdAndUpdate(request.params.id, person, {new: true})  // Notice that "Persons.findByIdAndUpdate" parameter should be normal "javascript" object not construction function "Person", what have been created a new persons. 
+Person.findByIdAndUpdate(request.params.id, person, {name, number},  {new: true , runValidators: true, context:'query'})  // Notice that "Persons.findByIdAndUpdate" parameter should be normal "javascript" object not construction function "Person", what have been created a new persons. 
   // Notice that "Persons.findByIdAndUpdate" parameter should be normal "javascript" object not construction function "Person", what have been created a new persons. 
-
+ // When we are using "Person.findByIdAndUpdate" method or related to that, then Mongose does not accept automatically runValidator, Therefore we have to pass configuration  and set the context option to query 
   .then(updatedPerson => {
     response.json(updatedPerson)  // return  data inside of "updatedPerson" variable  with json mode 
     console.log(updatedPerson) // Print that "updatedPerson" variables value back to the terminal 
   })
+
 
   .catch(error =>  
     // We are creating "errorhandler" => ".catch(error => next())", which purpose is to move that "errorhandler" into next function 
@@ -339,36 +330,42 @@ Person.findByIdAndUpdate(request.params.id, person, {new: true})  // Notice that
 
 
 
-  
 
 
 
-
-
+// We going to extend "errorhandler" to mark potential "validatorerrors"
 // We creating " function "errorhandlermiddleware", which get four parameters => [error, request, response, next]
-const errorhandler = (error, request, response,next) => { // "errorhandler" checks if its purpose is  typical error like "Cast error", whereas it is then it response request with response object. 
+const errorHandler = (error, request, response, next) => { // "errorhandler" checks if its purpose is  typical error like "Cast error", whereas it is then it response request with response object. 
   // Whereas it is not then it moves  handling of "Next()" function to  for express existent middleware
   console.log(error.message) // Print that "error.message"  and its text in terminal&console. So if we trying to delete "persons" from database what is not found in database, then it print that => --- Cast to ObjectId failed for value "5" (type string) at path "_id" for model "persons" CastError error happened.  Please check error and try again!:) 
-  console.log(error.name) // Print that "error.name" value visible for terminal with this we can decide what if condition we are going to use that value and with that we can print that text to terminal.
+   // Print that "error.name" value visible for terminal with this we can decide what if condition we are going to use that value and with that we can print that text to terminal.
 
   if(error.name=== 'CastError'){ // "errorhandler" check if its typical as "CastError" if it then answer request with respons.status(). 
     console.log("error happened.  Please check error and try again!:)")  // It print that text visible terminal and response status 404 Not Found and error message, which is seen also Postman or browser.
-    return response.status(400).send({errorMessage: 'Malformatted id'})
+    return response.status(400).send({error: 'Malformatted id'})
              // We are also adding separate answer of error reason => ({error: 'malformatted id'})
+  }else if(error.name ==='ValidationError'){ // We going to extend "errorhandler" to mark potential "validatorerrors"
+  // So if if condition will implement => "error.name" is equal as 'ValidationError', Then we going to implement  things inside of {...}. 
 
+    return response.status(400).json({errorMessage:error.message}) 
+    // if that if condition implement, the It return and answer request with statuscode(400) with Json mode and at same time it response that "errorMessage:"
   }
+
 
   next(error) // "middleware" function "next()" is called with parameter, then it continue its execution in "errorhandler" "middleware" and print that error visible in terminal
   // If "next()" middleware function is called without parameter then it move its execution to another route or middleware.
 
-  
 }
 
+app.use(errorHandler)
     
 
-// We taking "errorhandler" middleware function into account with => "app.use(errorhandler)" 
-// Notice that "app.use(errorhandler)" should have been taken account after other middlewares.
-app.use(errorhandler)
+
+
+
+
+
+
 
 
 

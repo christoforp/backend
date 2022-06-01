@@ -33,3 +33,18 @@
   padding: 10px;
   margin-bottom: 10px;
 }
+
+
+.error {
+  color: #434222;
+  background: #dc70c6;
+  font-size: 20px;
+  font-family: 'Josefin Sans';
+  text-align: center;
+  border-style: solid;
+  border-radius: 5px;
+  border-color: #443b24;
+  padding: 10px;
+  margin-bottom: 10px;
+
+}

@@ -1,4 +1,10 @@
 const mongoose = require("mongoose")   // We initalize function "mongoose", which use "mongoose" library.
+const uniqueValidator = require('mongoose-unique-validator') // We  determine "uniqueValidator", which use "mongoose-unique-validator"
+
+// "Mongoose-unique-validator" is plugin, which add pre-validation to for uniquefield with "mongooseSchema". 
+// This help to use make "errorhandler" easier and we get mongoose validation erro, when we  attempt to violate unique constraint.
+
+
 
 
 const database = process.env.MONGODB_URI
@@ -28,11 +34,33 @@ mongoose.connect(database)
 
 // We initalize variable "personSchema", which purpose is to determine, which mode we save those object into database. 
 // So practically this means that, which mode they will be saved on the database.
-const personSchema = new mongoose.Schema({
-    name: String, // We determine variable name, which is found in database => persons.name
-    number: String, // We initalize variable "number", which is found in database  => persons.number
+const  personSchema = new mongoose.Schema({
+   // We utilize "Routes eventhandler" and handler defining data what have been saved into database. 
+     // We are using "Mongoose" "validation functionality" 
+    // We define validation rules for both datafield with  in Schema.
+    
+    name: { // We define variable field name, which get its type name => String => it is found in database => persons.name
+        type: String,
+        minlength: 5,  // variables "name" content type should now be at least 5 String.
+                  // "minlenght" is an example validator, which  is build and provided by Mongoose
+                // required is an example validator, which is also build and provided by Mongoose.
+       },
+       // There is good notice that "name" field must have some value because since its minlenght check condition do not mention situation, where field does not have any value. 
+  
+       number: { // We define variable field "number", which get its type number => String 
+         type: String, // We also define values for number field and  it must have some value of condition because field value can not be empty. 
+                   // required is an example validator, which is also build and provided by Mongoose. 
+                           // Mongooses custom validator functionality allows us to create a new validators if non of build in ones cover our need.
+       
 
-})
+       }
+
+    })     
+    // Adding plugin to "Schema
+    personSchema.plugin(uniqueValidator) // This purpose is to apply uniqueValidator plugin to Schema.
+    
+
+  
 
 // We de can determine with this that which mode it show Json data
 personSchema.set('toJSON', {
@@ -43,6 +71,8 @@ personSchema.set('toJSON', {
 
     }
 })
+
+
 
 
 
