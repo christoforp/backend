@@ -41,22 +41,24 @@ const  personSchema = new mongoose.Schema({
     
     name: { // We define variable field name, which get its type name => String => it is found in database => persons.name
         type: String,
-        minlength: 5,  // variables "name" content type should now be at least 5 String.
-                  // "minlenght" is an example validator, which  is build and provided by Mongoose
-                // required is an example validator, which is also build and provided by Mongoose.
+        minlength: 5,           // variables "name" content type should now be at least 5 String.
+        required: true          // "minlenght" is an example validator, which  is build and provided by Mongoose
+                                // required is an example validator, which is also build and provided by Mongoose.
        },
-       // There is good notice that "name" field must have some value because since its minlenght check condition do not mention situation, where field does not have any value. 
+                             // There is good notice that "name" field must have some value because since its minlenght check condition do not mention situation, where field does not have any value. 
   
-       number: { // We define variable field "number", which get its type number => String 
-         type: String, // We also define values for number field and  it must have some value of condition because field value can not be empty. 
-                   // required is an example validator, which is also build and provided by Mongoose. 
-                           // Mongooses custom validator functionality allows us to create a new validators if non of build in ones cover our need.
+       number: {              // We define variable field "number", which get its type number => String 
+         type: String,         // We also define values for number field and  it must have some value of condition because field value can not be empty. 
+        minlength: 8,           // "minglength" is an example validator, which  is in build-validator and provided by mongoose. 
+                              // We determine and set "minlenght" for type field "number". It get  its minimalenght value 8, which means that "number" lenght should be at least 8.
+                             // required is an example validator, which is also build and provided by Mongoose 
+        required: true   // Mongooses custom validator functionality allows us to create a new validators if non of build in ones cover our need.
        
 
        }
 
     })     
-    // Adding plugin to "Schema
+    // Adding uniqueValidator plugin. So we can easily add Validatio unique constraint. 
     personSchema.plugin(uniqueValidator) // This purpose is to apply uniqueValidator plugin to Schema.
     
 

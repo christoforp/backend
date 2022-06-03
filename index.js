@@ -128,8 +128,8 @@ app.post('/api/persons', (request,response, next) => { // We determine (event ha
      // We are creating similar handler of creating a new persons, that it can passes any potential exeption to the   "error handler middleware" 
      // So we make sure that eventhandler, which respond of that creating a new person, So basically it means that it send exception to the "error handler middleware"
 
-     .catch(error =>  // We are using  ".catch()" error function, which callbackfunction "error", which purpose is to move that "errorhandler" forward to the "next()" function.  
-      next(error)) // "next()"errorhandler middleware function move that handling  to "errorhandlermiddleware"  
+     .catch(error =>  // We are using  ".catch()" error function, which callbackfunction "error", which purpose is to move that "errorhandler" forward to the "next()" function.   
+     next(error)) // "next()"errorhandler middleware function move that handling  to "errorhandlermiddleware"  
     })
     
 
@@ -223,7 +223,7 @@ app.get('/api/persons/:id', (request, response, next) => { // When user trying t
     response.json(person)
   }else{ // Whereas there is no found  any desired object in base, then variables value is "null" and it conduct that things }else{ 
 
-    response.status(404).end() // We answering request with HTTP statuscode "(404)" not found
+    
   }
 }) 
 
@@ -231,14 +231,10 @@ app.get('/api/persons/:id', (request, response, next) => { // When user trying t
 // We creating event handler ".catch(error => next(error))", which purpose is to move "errorhandler" to  forward with "next"() function 
 // As we seen in "app.get('./", () next is added to "eventhandler" for  third parameter 
 .catch(error => 
-    next(error))
-     // If "next()" function is called by parameter, then it continue its execution to "errorhandler" middleware.
-       //  whereas we using just  "next()"" it  going to execute  next route or middlevare 
+                    // If "next()" function is called by parameter, then it continue its execution to "errorhandler" middleware.                //  whereas we using just  "next()"" it  going to execute  next route or middlevare 
+    next(error))        // Whereas returning  promise  of "findById" goes into rejected mode, then we answering request with HTTP "statuscode(500) internal error" => "response.status(500).end()"
 
-     // Whereas returning promise  of "findById" goes into rejected mode, then we answering request with HTTP "statuscode(500) internal error" => "response.status(500).end()"
 })
-
-
 
 
 
@@ -282,8 +278,7 @@ app.put('./api/persons/:id', (request, response,next) => {
     // eventhandler get also parameters orginal UpdatePerson  Updated object before change in the status quo
     // We had also been adding  parameter "{new: true}", that we get changes variables object back to the caller.
       
-Person.findByIdAndUpdate(request.params.id, person, {name, number},  {new: true , runValidators: true, context:'query'})  // Notice that "Persons.findByIdAndUpdate" parameter should be normal "javascript" object not construction function "Person", what have been created a new persons. 
-  // Notice that "Persons.findByIdAndUpdate" parameter should be normal "javascript" object not construction function "Person", what have been created a new persons. 
+Person.findByIdAndUpdate(request.params.id,  person ,  {name, number},  {new: true})  // Notice that "Persons.findByIdAndUpdate" parameter should be normal "javascript" object not construction function "Person", what have been created a new persons. 
  // When we are using "Person.findByIdAndUpdate" method or related to that, then Mongose does not accept automatically runValidator, Therefore we have to pass configuration  and set the context option to query 
   .then(updatedPerson => {
     response.json(updatedPerson)  // return  data inside of "updatedPerson" variable  with json mode 
@@ -293,7 +288,7 @@ Person.findByIdAndUpdate(request.params.id, person, {name, number},  {new: true 
 
   .catch(error =>  
     // We are creating "errorhandler" => ".catch(error => next())", which purpose is to move that "errorhandler" into next function 
-         // if " next()  function is called by parameters, then it continue its execution or condcution in express errorhandler middleware
+         // if " next()  function is called by parameters, then it continue its execution or conduction in express errorhandler middleware
                         // If "next()"   function is called without parameters, then it going to move it to next route or middleware. 
     next(error))
   })
@@ -311,16 +306,19 @@ Person.findByIdAndUpdate(request.params.id, person, {name, number},  {new: true 
 
   // When user trying to go site "http:localhost/api/persons/id:", which purpose is to handle  "HTTP delete request", which are mode "api/persons" > id[1,2,3,4,5], then it return answer back to user. 
   app.delete('/api/persons/:id', (request, response, next) => { // We determine application (event handler), which purpose is to get application => "/api/persons/:id" becoming  "HTTP" request.
-   Person.findByIdAndRemove(request.params.id).then(person => {   
-    // If user want to delete person, which "id"  (2), then "request.params.id" get value 2 
-    //  Answer of both cases is 204 No Content So if => "persons" object removing happens remove  if object is remover or  is not found any object even Id would been  right. 
-      response.status(204).end() // We can check if that resource was actually deleted in base with  "callback" function .then(result) and we can also return response with other statuscode if that it is necessary. 
-    })
-      // We answering HTTP "request" with statuscode(204). "No content"
-      .catch(error  =>  // Whereas there is coming problem when deleting, So promise is end up to (rejected), Then we conduct things inside of that {...} function 
-       next(error))
-  })
+    Person.findByIdAndRemove(request.params.id).then(person => {      
+     // If user want to delete person, which "id"  (2), then "request.params.id" get value 2 
+     //  Answer of both cases is 204 No Content So if => "persons" object removing happens remove  if object is remover or  is not found any object even Id would been  right. 
+       response.status(204).end() // We can check if that resource was actually deleted in base with  "callback" function .then(result) and we can also return response with other statuscode if that it is necessary. 
+     })
+       // We answering HTTP "request" with statuscode(204). "No content"
+       .catch(error  =>  // Whereas there is coming problem when deleting, So promise is end up to (rejected), Then we conduct things inside of that {...} function 
+       response.status(404).end())
        
+       next(error)
+   })
+ 
+
      
        
      // Returning with response variable "400" bad request and same time that reason and text. 
@@ -338,7 +336,8 @@ Person.findByIdAndUpdate(request.params.id, person, {name, number},  {new: true 
 const errorHandler = (error, request, response, next) => { // "errorhandler" checks if its purpose is  typical error like "Cast error", whereas it is then it response request with response object. 
   // Whereas it is not then it moves  handling of "Next()" function to  for express existent middleware
   console.log(error.message) // Print that "error.message"  and its text in terminal&console. So if we trying to delete "persons" from database what is not found in database, then it print that => --- Cast to ObjectId failed for value "5" (type string) at path "_id" for model "persons" CastError error happened.  Please check error and try again!:) 
-   // Print that "error.name" value visible for terminal with this we can decide what if condition we are going to use that value and with that we can print that text to terminal.
+  console.log(error.name)
+  // Print that "error.name" value visible for terminal with this we can decide what if condition we are going to use that value and with that we can print that text to terminal.
 
   if(error.name=== 'CastError'){ // "errorhandler" check if its typical as "CastError" if it then answer request with respons.status(). 
     console.log("error happened.  Please check error and try again!:)")  // It print that text visible terminal and response status 404 Not Found and error message, which is seen also Postman or browser.
@@ -347,7 +346,7 @@ const errorHandler = (error, request, response, next) => { // "errorhandler" che
   }else if(error.name ==='ValidationError'){ // We going to extend "errorhandler" to mark potential "validatorerrors"
   // So if if condition will implement => "error.name" is equal as 'ValidationError', Then we going to implement  things inside of {...}. 
 
-    return response.status(400).json({errorMessage:error.message}) 
+    return response.status(400).json({error:error.message}) 
     // if that if condition implement, the It return and answer request with statuscode(400) with Json mode and at same time it response that "errorMessage:"
   }
 

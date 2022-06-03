@@ -5,6 +5,7 @@ if (process.argv.length<3) { // Whereas process.argv.lenght is less than 3, then
   console.log(`You just typed to the terminal command, which length is total of ${process.argv.length}!`) // it print that text into terminal, when if condition will work and "process.argv.lenght" is <3
   console.log('give password as argument') //  if "if" condition will work So process.argv.lenght is under 3, Then console.log()" print that text into terminal,
   process.exit(1) // This fucntion will stop running application with "process.exit(1)"
+
 }
 
 
