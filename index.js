@@ -231,8 +231,10 @@ app.get('/api/persons/:id', (request, response, next) => { // When user trying t
 // We creating event handler ".catch(error => next(error))", which purpose is to move "errorhandler" to  forward with "next"() function 
 // As we seen in "app.get('./", () next is added to "eventhandler" for  third parameter 
 .catch(error => 
-                    // If "next()" function is called by parameter, then it continue its execution to "errorhandler" middleware.                //  whereas we using just  "next()"" it  going to execute  next route or middlevare 
-    next(error))        // Whereas returning  promise  of "findById" goes into rejected mode, then we answering request with HTTP "statuscode(500) internal error" => "response.status(500).end()"
+     
+     response.status(404).end())                       // If "next()" function is called by parameter, then it continue its execution to "errorhandler" middleware.                //  whereas we using just  "next()"" it  going to execute  next route or middlevare 
+    next(error)    // Whereas returning  promise  of "findById" goes into rejected mode, then we answering request with HTTP "statuscode(500) internal error" => "response.status(500).end()"
+
 
 })
 
@@ -264,7 +266,7 @@ app.put('./api/persons/:id', (request, response,next) => {
 
   const getValue = request.body //  We initialize variable "getId", which  is equal as  "request.body"
     // We initalize variable "person",which utilize Person{...} function, So it means that that we have been created separated module for "Person"
-      // We initalize variable "person ", where we adding three different object  => ["name, "number"], which is seen "let persons"
+      // We initalize variable "person ", where we adding two different object  => ["name, "number"], which is seen "let persons"
     const  person = {
       name: getValue.name, // So name => String, "get.id.name" variables move into persons collection => persons.name
       number: getValue.number // So number => String, "get.id.number" variables move into persons collection => persons.number
@@ -317,10 +319,7 @@ Person.findByIdAndUpdate(request.params.id,  person ,  {name, number},  {new: tr
        
        next(error)
    })
- 
-
-     
-       
+  
      // Returning with response variable "400" bad request and same time that reason and text. 
 
       
@@ -335,7 +334,7 @@ Person.findByIdAndUpdate(request.params.id,  person ,  {name, number},  {new: tr
 // We creating " function "errorhandlermiddleware", which get four parameters => [error, request, response, next]
 const errorHandler = (error, request, response, next) => { // "errorhandler" checks if its purpose is  typical error like "Cast error", whereas it is then it response request with response object. 
   // Whereas it is not then it moves  handling of "Next()" function to  for express existent middleware
-  console.log(error.message) // Print that "error.message"  and its text in terminal&console. So if we trying to delete "persons" from database what is not found in database, then it print that => --- Cast to ObjectId failed for value "5" (type string) at path "_id" for model "persons" CastError error happened.  Please check error and try again!:) 
+  console.log(error.message) // Print that "error.message"  and its text in terminal&console. So if we trying to delete "persons" from database what is not found in database, then it print that => --- (Cast to ObjectId failed for value "5" (type string) at path "_id" for model "persons" CastError error happened.  Please check error and try again!:) 
   console.log(error.name)
   // Print that "error.name" value visible for terminal with this we can decide what if condition we are going to use that value and with that we can print that text to terminal.
 
@@ -355,7 +354,7 @@ const errorHandler = (error, request, response, next) => { // "errorhandler" che
   // If "next()" middleware function is called without parameter then it move its execution to another route or middleware.
 
 }
-
+// We are initialize and  "middleware errorhandler" function into account with "app.use(errorhandler)"
 app.use(errorHandler)
     
 
