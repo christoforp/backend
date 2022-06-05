@@ -45,7 +45,7 @@ mongoose.connect(database, {
 // We determine variable "Person", which is equal as "mongoose.model()" function. Notice that if "persons" value would be "Christo", then data will move under to chistos collection.
 // This mean that Mongoose.DB will automatically change and move all letters to small and will put S letter to end of that. 
 // So function in belov will get  => 'persons' variable and  "mongoframe" values.
-  const Person  =  mongoose.model('Person', personSchema)
+  const Person  =  mongoose.model('persons', personSchema)
 
   // We determine   model Post, where First parameter String of Post determine that mongoose saves similar object of persons to collection name as persons.
   // As we see that is in plural mode because mongoose  convention  is to determine automatically that collension as the plural.
