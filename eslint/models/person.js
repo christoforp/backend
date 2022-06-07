@@ -14,9 +14,6 @@ const uniqueValidator = require('mongoose-unique-validator') // We  determine "u
 const database = process.env.MONGODB_URI
 
 
-
-
-
 // We initalize variable "url", which get envinronment variables value => "process.env.MONDODB_URI"
 // Intead of database site we are using MONGODB_URL envinronment variable
 
@@ -24,18 +21,16 @@ const database = process.env.MONGODB_URI
 console.log('connecting to', database) // We are connecting to database and this print that text whereas it connect MondoDB environment variables database
 
 mongoose.connect(database)
-
   .then(result => {  // We have been defined function of succes, when we are trying to connect MongoDB
     console.log('connected to the MongoDB') // Print that text into terminal when connect happens.
   })
-
-
 
   .catch((error) => { // We have been defined "error message", when connecting to database not work.
     console.log('connecting to the MongoDB Was failed. Please Try again:', error.message  ) // Print that text into terminal and at same time shows
     // We have been denifed fail and success handler functions, which tells lucky or fail connection while conducting process.
 
   })
+
 
 
 
